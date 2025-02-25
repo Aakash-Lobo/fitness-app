@@ -36,12 +36,17 @@ mongoose
 
 // User Model
 const UserSchema = new mongoose.Schema({
-  name: String,
-  email: String,
-  password: String, // For manual registration
-  googleId: String, // For Google OAuth
-  avatar: String,
+  googleId: { type: String, unique: true, sparse: true },
+  name: { type: String, required: true },
+  dob: { type: String }, 
+  address: { type: String }, 
+  email: { type: String, required: true, unique: true },
+  password: { type: String },
+  avatar: { type: String },
+  role: { type: String, enum: ["user", "admin", "trainer"], default: "user" },
+  status: { type: String, enum: ["pending", "approved", "declined"], default: "pending" },
 });
+
 const User = mongoose.model("User", UserSchema);
 
 // Local Strategy for Manual Registration/Login
@@ -50,12 +55,21 @@ passport.use(
     const user = await User.findOne({ email });
     if (!user) return done(null, false, { message: "User not found" });
 
+    if (user.status === "pending") {
+      return done(null, false, { message: "Your account is pending approval." });
+    }
+
+    if (user.status === "declined") {
+      return done(null, false, { message: "Your account has been declined." });
+    }
+
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return done(null, false, { message: "Incorrect password" });
 
     return done(null, user);
   })
 );
+
 
 // Google OAuth Strategy
 passport.use(
@@ -72,8 +86,9 @@ passport.use(
         user = await User.create({
           googleId: profile.id,
           name: profile.displayName,
-          avatar: profile.photos[0].value,
           email: profile.emails[0].value,
+          avatar: profile.photos[0].value,
+          status: "pending",
         });
       }
 
@@ -81,6 +96,7 @@ passport.use(
     }
   )
 );
+
 
 // Serialize & Deserialize User
 passport.serializeUser((user, done) => done(null, user.id));
@@ -91,45 +107,156 @@ passport.deserializeUser(async (id, done) => {
 
 // Manual Registration Route
 app.post("/register", async (req, res) => {
-  const { name, email, password } = req.body;
+  try {
+      const { name, email, password } = req.body;
 
-  const existingUser = await User.findOne({ email });
-  if (existingUser) return res.status(400).json({ message: "User already exists" });
+      // Check if user already exists
+      let existingUser = await User.findOne({ email });
+      if (existingUser) {
+          return res.status(400).json({ message: "User already exists" });
+      }
 
-  const hashedPassword = await bcrypt.hash(password, 10);
-  const newUser = await User.create({ name, email, password: hashedPassword });
+      // Hash password
+      const hashedPassword = await bcrypt.hash(password, 10);
 
-  res.json({ message: "User registered successfully", user: newUser });
+      // Create new user with 'pending' status
+      const newUser = new User({
+          name,
+          email,
+          password: hashedPassword,
+          role: "user",  // Default role is "user"
+          status: "pending" // Default status is "pending"
+      });
+
+      await newUser.save();
+      res.status(201).json({ message: "User registered successfully. Waiting for admin approval." });
+
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Server error" });
+  }
 });
+
+
+
 
 // Manual Login Route
-app.post("/login", passport.authenticate("local"), (req, res) => {
-  res.json({ message: "Logged in successfully", user: req.user });
+app.post("/login", (req, res, next) => {
+  passport.authenticate("local", (err, user, info) => {
+    if (err) return res.status(500).json({ message: "Server error" });
+
+    if (!user) return res.status(400).json({ message: info.message }); // Return status message
+
+    req.logIn(user, (err) => {
+      if (err) return res.status(500).json({ message: "Login failed" });
+
+      return res.json({
+        message: "Logged in successfully",
+        user: {
+          name: user.name,
+          email: user.email,
+          status: user.status,
+          role: user.role,
+        },
+      });
+    });
+  })(req, res, next);
 });
+
 
 // Google OAuth Routes
 app.get("/auth/google", passport.authenticate("google", { scope: ["profile", "email"] }));
 
 app.get(
   "/auth/google/callback",
-  passport.authenticate("google", {
-    successRedirect: "http://localhost:3000/register",
-    failureRedirect: "/auth/failure",
-  })
+  passport.authenticate("google", { failureRedirect: "/auth/failure" }),
+  (req, res) => {
+    if (!req.user) {
+      return res.redirect("http://localhost:3000/login?error=unauthorized");
+    }
+
+    if (req.user.status === "pending") {
+      return res.redirect("http://localhost:3000/login?error=pending");
+    } else if (req.user.status === "declined") {
+      return res.redirect("http://localhost:3000/login?error=declined");
+    }
+
+    // Redirect based on user role
+    if (req.user.role === "admin") {
+      return res.redirect("http://localhost:3000/roles/admin/admindashboard");
+    } else if (req.user.role === "trainer") {
+      return res.redirect("http://localhost:3000/trainer-dashboard");
+    } else {
+      return res.redirect("http://localhost:3000/roles/User/userdashboard");
+    }
+  }
 );
+
 
 // Get Authenticated User
 app.get("/auth/user", (req, res) => {
-  res.json(req.user || null);
+  if (req.user) {
+    res.json({
+      name: req.user.name,
+      avatar: req.user.avatar,
+      status: req.user.status,
+      role: req.user.role,
+    });
+  } else {
+    res.json(null);
+  }
 });
 
+
 // Logout Route
-app.get("/auth/logout", (req, res) => {
-  req.logout((err) => {
-    if (err) return res.status(500).json({ error: "Logout failed" });
-    res.redirect("http://localhost:3000/register");
+app.post("/logout", (req, res) => {
+  res.clearCookie("connect.sid"); // Clear session cookie
+  req.session.destroy((err) => {
+    if (err) {
+      return res.status(500).json({ message: "Logout failed" });
+    }
+    res.json({ message: "Logged out successfully" });
   });
 });
+
+
+app.get("/admin/users", async (req, res) => {
+  try {
+    const users = await User.find(); // Adjust if needed
+    res.json(users);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching users" });
+  }
+});
+
+app.put("/admin/update-status/:userId", async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const { status } = req.body;
+
+    console.log("Received request for user:", userId, "Status:", status); // Debugging
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: "Invalid user ID format" });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    user.status = status;
+    await user.save();
+
+    res.json({ message: "User status updated successfully", status: user.status });
+  } catch (error) {
+    console.error("Error updating user status:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+
+
 
 // Start Server
 const PORT = process.env.PORT || 5000;
