@@ -24,33 +24,40 @@ const Login = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    const response = await fetch("http://localhost:5000/login", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(formData),
-      credentials: "include",
-    });
-
-    const data = await response.json();
-
-    if (response.ok) {
-      sessionStorage.setItem("role", data.role);
-      sessionStorage.setItem("status", data.status);
-
-      if (data.status === "pending") {
-        alert("Your account is pending approval.");
-      } else if (data.status === "declined") {
-        alert("Your account has been declined.");
+    try {
+      const response = await fetch("http://localhost:5000/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+        credentials: "include",
+      });
+  
+      const data = await response.json();
+      console.log("API Response:", data); // Debugging
+  
+      if (response.ok) {
+        const { role, status } = data.user; // Extract from `user`
+  
+        sessionStorage.setItem("role", role);
+        sessionStorage.setItem("status", status);
+  
+        if (status === "pending") {
+          alert("Your account is pending approval.");
+        } else if (status === "declined") {
+          alert("Your account has been declined.");
+        } else {
+          if (role === "admin") navigate("/Roles/Admin/AdminDashboard");
+          else if (role === "trainer") navigate("/Roles/Trainer/TrainerDashboard");
+          else navigate("/Roles/User/UserDashboard");
+        }
       } else {
-        if (data.role === "admin") navigate("./Roles/Admin/AdminDashboard");
-else if (data.role === "trainer") navigate("/trainer-dashboard");
-else navigate("./Roles/User/UserDashboard");
-
+        alert(data.message || "Login failed");
       }
-    } else {
-      alert(data.message || "Login failed");
+    } catch (error) {
+      console.error("Login Error:", error);
     }
   };
+  
 
   const handleGoogleLogin = () => {
     window.location.href = "http://localhost:5000/auth/google";

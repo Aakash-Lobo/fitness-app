@@ -185,7 +185,7 @@ app.get(
     if (req.user.role === "admin") {
       return res.redirect("http://localhost:3000/roles/admin/admindashboard");
     } else if (req.user.role === "trainer") {
-      return res.redirect("http://localhost:3000/trainer-dashboard");
+      return res.redirect("http://localhost:3000/roles/Trainer/trainerdashboard");
     } else {
       return res.redirect("http://localhost:3000/roles/User/userdashboard");
     }

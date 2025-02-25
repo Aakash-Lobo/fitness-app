@@ -4,6 +4,7 @@ import Register from './components/Register'; // Import the Register page
 import Login from './components/Login';
 import AdminDashboard from './components/Roles/Admin/AdminDashboard';
 import UserDashboard from './components/Roles/User/UserDashboard';
+import TrainerDashboard from './components/Roles/Trainer/TrainerDashboard';
 
 const App = () => {
   return (
@@ -21,6 +22,8 @@ const App = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/roles/admin/admindashboard" element={<AdminDashboard />} />
           <Route path="/roles/user/userdashboard" element={<UserDashboard />} />
+          <Route path="./components/Roles/Trainer/TrainerDashboard.js" element={<TrainerDashboard/>} />
+
 
         </Routes>
       </div>

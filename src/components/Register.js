@@ -14,8 +14,8 @@ const Register = () => {
         setUser(data);
         if (data?.status) setStatus(data.status);
         if (data?.role === "admin") navigate("./Roles/Admin/AdminDashboard");
-        else if (data?.role === "trainer") navigate("/trainer-dashboard");
-        else if (data?.role === "user" && data?.status === "approved") navigate("/user-dashboard");
+        else if (data?.role === "trainer") navigate("./Roles/Trainer/TrainerDashboard");
+        else if (data?.role === "user" && data?.status === "approved") navigate("./Roles/User/UserDashboard");
       });
   }, [navigate]);
 
