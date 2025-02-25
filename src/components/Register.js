@@ -8,7 +8,7 @@ const Register = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://localhost:5000/auth/user", { credentials: "include" })
+    fetch("http://localhost:5001/auth/user", { credentials: "include" })
       .then((res) => res.json())
       .then((data) => {
         setUser(data);
@@ -20,11 +20,11 @@ const Register = () => {
   }, [navigate]);
 
   const handleGoogleLogin = () => {
-    window.open("http://localhost:5000/auth/google", "_self");
+    window.open("http://localhost:5001/auth/google", "_self");
   };
 
   const handleLogout = () => {
-    window.open("http://localhost:5000/auth/logout", "_self");
+    window.open("http://localhost:5001/auth/logout", "_self");
   };
 
   const handleChange = (e) => {
@@ -33,7 +33,7 @@ const Register = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    const response = await fetch("http://localhost:5000/register", {
+    const response = await fetch("http://localhost:5001/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),
