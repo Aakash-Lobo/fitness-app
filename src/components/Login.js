@@ -33,13 +33,29 @@ const Login = () => {
       });
   
       const data = await response.json();
-      console.log("API Response:", data); // Debugging
+      console.log("Full API Response:", data); // Debugging
   
       if (response.ok) {
-        const { role, status } = data.user; // Extract from `user`
+        if (!data.user || !data.user._id) {
+          console.error("Error: `user` object or `_id` is missing in response");
+          alert("Login failed: Invalid response format");
+          return;
+        }
   
+        const { _id, role, status, email } = data.user; 
+        console.log("Extracted userId:", _id); // Debugging
+  
+        sessionStorage.setItem("userId", _id);
         sessionStorage.setItem("role", role);
         sessionStorage.setItem("status", status);
+        sessionStorage.setItem("email", email);
+  
+        localStorage.setItem("userId", _id);
+        localStorage.setItem("role", role);
+        localStorage.setItem("status", status);
+        localStorage.setItem("email", email);
+  
+        console.log("Stored userId:", sessionStorage.getItem("userId")); // Debugging
   
         if (status === "pending") {
           alert("Your account is pending approval.");
@@ -57,6 +73,7 @@ const Login = () => {
       console.error("Login Error:", error);
     }
   };
+  
   
 
   const handleGoogleLogin = () => {

@@ -145,7 +145,7 @@ app.post("/login", (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
     if (err) return res.status(500).json({ message: "Server error" });
 
-    if (!user) return res.status(400).json({ message: info.message }); // Return status message
+    if (!user) return res.status(400).json({ message: info.message });
 
     req.logIn(user, (err) => {
       if (err) return res.status(500).json({ message: "Login failed" });
@@ -153,6 +153,7 @@ app.post("/login", (req, res, next) => {
       return res.json({
         message: "Logged in successfully",
         user: {
+          _id: user._id,  // ✅ Ensure `_id` is included
           name: user.name,
           email: user.email,
           status: user.status,
@@ -255,9 +256,27 @@ app.put("/admin/update-status/:userId", async (req, res) => {
   }
 });
 
+app.get("/admin/trainers", async (req, res) => {
+  try {
+    const trainers = await User.find({ role: "trainer" }); // Fetch only trainers
+    res.json(trainers);
+  } catch (error) {
+    console.error("Error fetching trainers:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+const adminRoutes = require("./routes/adminRoutes"); // Adjust path if needed
+app.use("/admin", adminRoutes);
 
 
+const userRoutes = require("./routes/userRoutes"); // Correct import
+app.use("/user", userRoutes);
+
+const trainerRoutes = require("./routes/trainerRoutes"); // Correct import
+app.use("/trainer", trainerRoutes);
 
 // Start Server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+

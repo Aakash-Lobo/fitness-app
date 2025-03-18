@@ -1,91 +1,58 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "../Css/UserDashboard.css";
 
 const UserDashboard = () => {
-  const [users, setUsers] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const [email, setEmail] = useState("");
 
+  // Retrieve user email from storage
   useEffect(() => {
-    fetchUsers();
-  }, []);
-
-  const fetchUsers = async () => {
-    try {
-      setLoading(true);
-      const response = await fetch("http://localhost:5000/admin/users", {
-        credentials: "include",
-      });
-
-      if (!response.ok) throw new Error("Failed to fetch users");
-
-      const data = await response.json();
-      setUsers(data);
-    } catch (error) {
-      setError(error.message);
-    } finally {
-      setLoading(false);
+    const storedEmail = sessionStorage.getItem("email") || localStorage.getItem("email");
+    if (storedEmail) {
+      setEmail(storedEmail);
+    } else {
+      console.warn("No email found in storage. Redirecting to login.");
+      navigate("/Register"); // Redirect to login if email is missing
     }
-  };
+  }, [navigate]);
 
-  const updateUserStatus = async (userId, status) => {
+  // Handle Logout
+  const handleLogout = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/admin/update-status/${userId}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status }),
+      const response = await fetch("http://localhost:5000/logout", {
+        method: "POST",
         credentials: "include",
       });
 
-      if (!response.ok) throw new Error("Failed to update user status");
-
-      fetchUsers(); // Refresh users list
+      if (response.ok) {
+        sessionStorage.clear();
+        localStorage.clear(); // Clear all stored data
+        navigate("/Register");
+      }
     } catch (error) {
-      setError(error.message);
+      console.error("Error logging out:", error);
     }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white p-6 shadow-lg rounded-lg w-full max-w-3xl">
-        <h1 className="text-3xl font-bold text-center mb-6">Admin Dashboard</h1>
+    <div className="user-dashboard">
+      {/* Sidebar */}
+      <nav className="sidebar">
+        <h2>User Dashboard</h2>
+        <ul>
+          <li><a href="/Roles/User/UserDashboard">Dashboard</a></li>
+          <li><a href="/Roles/User/SearchTrainer">View Trainers</a></li>
+          <li><a href="/Roles/User/Settings">Settings</a></li>
+          <li><button onClick={handleLogout} className="logout-btn">Logout</button></li>
+        </ul>
+      </nav>
 
-        {loading ? (
-          <p className="text-center">Loading users...</p>
-        ) : error ? (
-          <p className="text-red-500 text-center">{error}</p>
-        ) : (
-          <>
-            <h2 className="text-2xl font-semibold mt-4">Pending Approvals</h2>
-            {users.filter((user) => user.status === "pending").length === 0 ? (
-              <p className="text-center text-gray-600">No pending users.</p>
-            ) : (
-              users
-                .filter((user) => user.status === "pending")
-                .map((user) => (
-                  <div key={user._id} className="p-4 border rounded-md mb-3 flex justify-between items-center">
-                    <div>
-                      <p className="font-medium">{user.name}</p>
-                      <p className="text-gray-600">{user.email}</p>
-                    </div>
-                    <div>
-                      <button
-                        className="bg-green-500 text-white px-3 py-1 mr-2 rounded hover:bg-green-600"
-                        onClick={() => updateUserStatus(user._id, "approved")}
-                      >
-                        Approve
-                      </button>
-                      <button
-                        className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-                        onClick={() => updateUserStatus(user._id, "declined")}
-                      >
-                        Decline
-                      </button>
-                    </div>
-                  </div>
-                ))
-            )}
-          </>
-        )}
+      {/* Main Content */}
+      <div className="main-content">
+        <h1>Welcome to Your Dashboard!</h1>
+        {email && <p>Logged in as: <strong>{email}</strong></p>}
+        <p>Select an option from the sidebar to get started.</p>
       </div>
     </div>
   );

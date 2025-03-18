@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "../Css/AdminDashboard.css";
 
 const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
@@ -29,8 +30,6 @@ const AdminDashboard = () => {
     }
   };
 
-  
-
   const updateUserStatus = async (userId, status) => {
     console.log("Updating user ID:", userId); // Debugging
     try {
@@ -40,10 +39,10 @@ const AdminDashboard = () => {
         body: JSON.stringify({ status }),
         credentials: "include",
       });
-  
+
       const data = await response.json();
       console.log("Update response:", data); // Debugging
-  
+
       if (response.ok) {
         fetchUsers(); // Refresh the user list
       } else {
@@ -62,55 +61,55 @@ const AdminDashboard = () => {
       });
 
       if (response.ok) {
-        sessionStorage.clear(); // Clear session storage
-        navigate("../../Register"); // Redirect to login page
+        sessionStorage.clear();
+        navigate("../../Register");
       }
     } catch (error) {
       console.error("Error logging out:", error);
     }
   };
-  
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white p-6 shadow-lg rounded-lg w-full max-w-3xl">
-      <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-        <button
-          onClick={handleLogout}
-          className="bg-red-500 text-white px-4 py-2 rounded"
-        >
-          Logout
-        </button>
+    <div className="admin-container">
+      {/* Sidebar */}
+      <nav className="sidebar">
+        <h2>Admin Panel</h2>
+        <ul>
+          <li><a href="/Roles/Admin/AdminDashboard">Dashboard</a></li>
+          <li><a href="/Roles/Admin/ManageUsers">Manage Users</a></li>
+          <li><a href="../Admin/ViewTrainers">Manage Trainers</a></li>
+          <li><a href="/Roles/Admin/Settings">Settings</a></li>
+          <li><button onClick={handleLogout} className="logout-btn">Logout</button></li>
+        </ul>
+      </nav>
+
+      {/* Main Content */}
+      <div className="main-content">
+        <h1>Admin Dashboard</h1>
 
         {loading ? (
-          <p className="text-center">Loading users...</p>
+          <p>Loading users...</p>
         ) : error ? (
-          <p className="text-red-500 text-center">{error}</p>
+          <p className="error">{error}</p>
         ) : (
           <>
-            <h2 className="text-2xl font-semibold mt-4">Pending Approvals</h2>
+            <h2>Pending Approvals</h2>
             {users.filter((user) => user.status === "pending").length === 0 ? (
-              <p className="text-center text-gray-600">No pending users.</p>
+              <p>No pending users.</p>
             ) : (
               users
                 .filter((user) => user.status === "pending")
                 .map((user) => (
-                  <div key={user._id} className="p-4 border rounded-md mb-3 flex justify-between items-center">
+                  <div key={user._id} className="user-card">
                     <div>
-                      <p className="font-medium">{user.name}</p>
-                      <p className="text-gray-600">{user.email}</p>
+                      <p className="user-name">{user.name}</p>
+                      <p className="user-email">{user.email}</p>
                     </div>
-                    <div>
-                      <button
-                        className="bg-green-500 text-white px-3 py-1 mr-2 rounded hover:bg-green-600"
-                        onClick={() => updateUserStatus(user._id, "approved")}
-                      >
+                    <div className="button-group">
+                      <button className="approve-btn" onClick={() => updateUserStatus(user._id, "approved")}>
                         Approve
                       </button>
-                      <button
-                        className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-                        onClick={() => updateUserStatus(user._id, "declined")}
-                      >
+                      <button className="decline-btn" onClick={() => updateUserStatus(user._id, "declined")}>
                         Decline
                       </button>
                     </div>

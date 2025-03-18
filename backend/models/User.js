@@ -11,3 +11,7 @@ const UserSchema = new mongoose.Schema({
   role: { type: String, enum: ["user", "admin", "trainer"], default: "user" },
   status: { type: String, enum: ["pending", "approved", "declined"], default: "pending" },
 });
+
+const User = mongoose.models.User || mongoose.model("User", UserSchema);
+
+module.exports = User;
