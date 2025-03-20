@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Sidebar from "./Sidebar"; // Import Sidebar component
 import "../Css/UserDashboard.css";
 
 const UserDashboard = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
 
-  // Retrieve user email from storage
+  // Retrieve user email from session/local storage
   useEffect(() => {
     const storedEmail = sessionStorage.getItem("email") || localStorage.getItem("email");
     if (storedEmail) {
       setEmail(storedEmail);
     } else {
       console.warn("No email found in storage. Redirecting to login.");
-      navigate("/Register"); // Redirect to login if email is missing
+      navigate("/Register"); // Redirect to login if no email found
     }
   }, [navigate]);
 
@@ -37,16 +38,8 @@ const UserDashboard = () => {
 
   return (
     <div className="user-dashboard">
-      {/* Sidebar */}
-      <nav className="sidebar">
-        <h2>User Dashboard</h2>
-        <ul>
-          <li><a href="/Roles/User/UserDashboard">Dashboard</a></li>
-          <li><a href="/Roles/User/SearchTrainer">View Trainers</a></li>
-          <li><a href="/Roles/User/Settings">Settings</a></li>
-          <li><button onClick={handleLogout} className="logout-btn">Logout</button></li>
-        </ul>
-      </nav>
+      {/* Sidebar Component */}
+      <Sidebar handleLogout={handleLogout} />
 
       {/* Main Content */}
       <div className="main-content">

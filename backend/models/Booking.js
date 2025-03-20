@@ -8,7 +8,7 @@ const bookingSchema = new mongoose.Schema({
   preferredTime: String,
   status: {
     type: String,
-    enum: ["pending", "declined", "accepted", "suggested"],
+    enum: ["pending", "declined", "accepted", "suggested", "cancelled"], // Added "cancelled"
     default: "pending",
   },
   suggestedTrainerId: { type: mongoose.Schema.Types.ObjectId, ref: "Trainer", default: null }

@@ -8,6 +8,7 @@ import TrainerDashboard from "./components/Roles/Trainer/TrainerDashboard";
 import ManageTrainers from "./components/Roles/Admin/ManageTrainers";
 import SearchTrainer from "./components/Roles/User/SearchTrainer";
 import ViewRequests from "./components/Roles/Trainer/ViewRequests";
+import AcceptedTrainers from "./components/Roles/User/AcceptedTrainers";
 
 const Navigation = () => {
   const location = useLocation();
@@ -40,6 +41,7 @@ const App = () => {
         <Route path="/roles/admin/viewtrainers" element={<ManageTrainers />} />
         <Route path="/roles/user/searchtrainer" element={<SearchTrainer />} />
         <Route path="/roles/trainer/viewrequests" element={<ViewRequests />} />
+        <Route path="/roles/user/AcceptedTrainers" element={<AcceptedTrainers />} />
       </Routes>
     </Router>
   );
