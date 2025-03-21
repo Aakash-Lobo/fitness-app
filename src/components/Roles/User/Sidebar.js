@@ -25,6 +25,7 @@ const Sidebar = ({ handleLogout }) => {
             <ul className="submenu">
               <li><a href="/Roles/User/SearchTrainer">Book Trainers</a></li>
               <li><a href="./AcceptedTrainers">Book Session</a></li>
+              <li><a href="./SelectGym">Gym</a></li>
             </ul>
           )}
         </li>

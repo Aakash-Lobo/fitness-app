@@ -15,6 +15,8 @@ import TrainerSessionHistory from "./components/Roles/Trainer/TrainerSessionHist
 import ManageUsers from "./components/Roles/Admin/ManageUsers";
 import UserSessionHistory from "./components/Roles/User/UserSessionHistory";
 import UserProgress from "./components/Roles/User/UserProgress";
+import ManageGyms from "./components/Roles/Admin/ManageGym";
+import SelectGym from "./components/Roles/User/SelectGym";
 
 const Navigation = () => {
   const location = useLocation();
@@ -46,8 +48,10 @@ const App = () => {
         <Route path="/roles/user/userdashboard" element={<UserDashboard />} />
         <Route path="/roles/admin/viewtrainers" element={<ManageTrainers />} />
         <Route path="/roles/admin/manageusers" element={<ManageUsers />} />
+        <Route path="/roles/admin/managegym" element={<ManageGyms />} />
         <Route path="/roles/user/searchtrainer" element={<SearchTrainer />} />
         <Route path="/roles/trainer/viewrequests" element={<ViewRequests />} />
+        <Route path="/roles/user/SelectGym" element={<SelectGym />} />
         <Route path="/roles/user/AcceptedTrainers" element={<AcceptedTrainers />} />
         <Route path="/roles/user/UpcomingSession" element={<UpcomingSessions />} />
         <Route path="/roles/user/UserSessionHistory" element={<UserSessionHistory />} />

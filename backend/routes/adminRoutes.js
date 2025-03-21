@@ -1,6 +1,8 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/User"); // Adjust path if needed
+const Gym = require("../models/Gym");
+
 
 // ✅ Fetch all trainers
 router.get("/trainers", async (req, res) => {
@@ -101,6 +103,66 @@ router.delete("/users/:id", async (req, res) => {
   }
 });
 
+router.get("/trainers", async (req, res) => {
+  try {
+    const trainers = await User.find({ role: "trainer" });
+    res.json(trainers);
+  } catch (error) {
+    console.error("Error fetching trainers:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+});
+
+// ✅ Fetch all gyms with trainers
+router.get("/gyms", async (req, res) => {
+  try {
+    const gyms = await Gym.find().populate("trainers", "name email");
+    res.json(gyms);
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching gyms", error });
+  }
+});
+
+// ✅ Add a new gym with trainers
+router.post("/gyms", async (req, res) => {
+  try {
+    const { name, address, latitude, longitude, facilities, trainers } = req.body;
+    const newGym = new Gym({ name, address, latitude, longitude, facilities, trainers });
+    await newGym.save();
+    res.status(201).json({ message: "Gym added successfully", gym: newGym });
+  } catch (error) {
+    res.status(500).json({ message: "Error adding gym", error });
+  }
+});
+
+// ✅ Update gym trainers
+router.put("/gyms/:id/trainers", async (req, res) => {
+  try {
+    const { trainers } = req.body;
+    const updatedGym = await Gym.findByIdAndUpdate(
+      req.params.id,
+      { trainers },
+      { new: true }
+    ).populate("trainers", "name email");
+
+    if (!updatedGym) return res.status(404).json({ message: "Gym not found" });
+
+    res.json(updatedGym);
+  } catch (error) {
+    res.status(500).json({ message: "Error updating gym trainers", error });
+  }
+});
+
+// ✅ Delete a gym
+router.delete("/gyms/:id", async (req, res) => {
+  try {
+    const deletedGym = await Gym.findByIdAndDelete(req.params.id);
+    if (!deletedGym) return res.status(404).json({ message: "Gym not found" });
+    res.json({ message: "Gym deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting gym", error });
+  }
+});
 
 
 module.exports = router;

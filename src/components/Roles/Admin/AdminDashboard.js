@@ -78,7 +78,7 @@ const AdminDashboard = () => {
           <li><a href="/Roles/Admin/AdminDashboard">Dashboard</a></li>
           <li><a href="../Admin/ManageUsers">Manage Users</a></li>
           <li><a href="../Admin/ViewTrainers">Manage Trainers</a></li>
-          <li><a href="/Roles/Admin/Settings">Settings</a></li>
+          <li><a href="./ManageGym">Gym</a></li>
           <li><button onClick={handleLogout} className="logout-btn">Logout</button></li>
         </ul>
       </nav>

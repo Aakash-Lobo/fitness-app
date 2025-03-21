@@ -3,6 +3,7 @@ const router = express.Router();
 const User = require("../models/User");// Ensure Trainer model exists
 const Booking = require("../models/Booking"); 
 const Session = require("../models/Session");
+const Gym = require("../models/Gym"); 
 
 // GET all approved trainers
 router.get("/trainers", async (req, res) => {
@@ -309,6 +310,28 @@ router.get("/progress", async (req, res) => {
     res.status(500).json({ error: "Error fetching progress data" });
   }
 });
+
+router.get("/gyms", async (req, res) => {
+  try {
+    const gyms = await Gym.find();
+    res.json(gyms);
+  } catch (error) {
+    console.error("Error fetching gyms:", error);
+    res.status(500).json({ error: "Failed to fetch gyms" });
+  }
+});
+
+router.get("/gyms/:gymId/trainers", async (req, res) => {
+  try {
+    const gym = await Gym.findById(req.params.gymId).populate("trainers");
+    if (!gym) return res.status(404).json({ error: "Gym not found" });
+
+    res.json(gym.trainers);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch trainers" });
+  }
+});
+
 
 
 module.exports = router;
