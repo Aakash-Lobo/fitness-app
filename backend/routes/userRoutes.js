@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/User");// Ensure Trainer model exists
 const Booking = require("../models/Booking"); 
+const Session = require("../models/Session");
 
 // GET all approved trainers
 router.get("/trainers", async (req, res) => {
@@ -124,6 +125,39 @@ router.put("/cancelTrainer/:trainerId", async (req, res) => {
     res.status(500).json({ error: "Server error while cancelling trainer." });
   }
 });
+
+router.post("/bookSession", async (req, res) => {
+  try {
+    const { userEmail, trainerId, date, time, duration, notes } = req.body;
+    if (!userEmail || !trainerId || !date || !time || !duration) {
+      return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    const newSession = new Session({ userEmail, trainerId, date, time, duration, notes });
+    await newSession.save();
+    res.json({ message: "Session booked successfully", session: newSession });
+  } catch (error) {
+    console.error("Error booking session:", error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
+router.get("/upcomingSessions", async (req, res) => {
+  try {
+    const { email } = req.query;
+    if (!email) return res.status(400).json({ message: "Email is required." });
+
+    // Fetch sessions where the user is scheduled
+    const sessions = await Session.find({ userEmail: email, status: "Scheduled" })
+      .populate("trainerId", "name"); // Fetch only the trainer's name
+
+    res.json(sessions);
+  } catch (error) {
+    console.error("Error fetching upcoming sessions:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+});
+
 
 
 module.exports = router;

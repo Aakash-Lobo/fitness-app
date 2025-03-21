@@ -9,6 +9,10 @@ import ManageTrainers from "./components/Roles/Admin/ManageTrainers";
 import SearchTrainer from "./components/Roles/User/SearchTrainer";
 import ViewRequests from "./components/Roles/Trainer/ViewRequests";
 import AcceptedTrainers from "./components/Roles/User/AcceptedTrainers";
+import UpcomingSessions from "./components/Roles/User/UpcomingSession";
+import TrainerUpcomingSessions from "./components/Roles/Trainer/TrainerUpcomingSessions";
+import TrainerSessionHistory from "./components/Roles/Trainer/TrainerSessionHistory";
+import ManageUsers from "./components/Roles/Admin/ManageUsers";
 
 const Navigation = () => {
   const location = useLocation();
@@ -39,9 +43,14 @@ const App = () => {
         <Route path="/roles/trainer/trainerdashboard" element={<TrainerDashboard />} />
         <Route path="/roles/user/userdashboard" element={<UserDashboard />} />
         <Route path="/roles/admin/viewtrainers" element={<ManageTrainers />} />
+        <Route path="/roles/admin/manageusers" element={<ManageUsers />} />
         <Route path="/roles/user/searchtrainer" element={<SearchTrainer />} />
         <Route path="/roles/trainer/viewrequests" element={<ViewRequests />} />
         <Route path="/roles/user/AcceptedTrainers" element={<AcceptedTrainers />} />
+        <Route path="/roles/user/UpcomingSession" element={<UpcomingSessions />} />
+        <Route path="/roles/trainer/trainerupcomingsessions" element={<TrainerUpcomingSessions />} />
+        <Route path="/roles/trainer/trainersessionhistory" element={<TrainerSessionHistory />} />
+         <Route path="/roles/trainer/trainersessionhistory" element={<TrainerSessionHistory />} />
       </Routes>
     </Router>
   );

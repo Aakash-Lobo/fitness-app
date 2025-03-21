@@ -1,25 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import TrainerSidebar from "./TrainerSidebar"; // Adjust path as needed
 import "../Css/TrainerDashboard.css";
 
 const TrainerDashboard = () => {
   const navigate = useNavigate();
   const [userId, setUserId] = useState("");
 
-  // Retrieve userId from storage
   useEffect(() => {
     const storedUserId = sessionStorage.getItem("userId") || localStorage.getItem("userId");
-    console.log("Retrieved userId from storage:", storedUserId); // Debugging
-
     if (storedUserId) {
       setUserId(storedUserId);
     } else {
-      console.warn("No userId found in storage. Redirecting to login.");
-      navigate("/Register"); // Redirect to login if userId is missing
+      navigate("/Register");
     }
   }, [navigate]);
 
-  // Handle Logout
   const handleLogout = async () => {
     try {
       const response = await fetch("http://localhost:5000/logout", {
@@ -39,16 +35,7 @@ const TrainerDashboard = () => {
 
   return (
     <div className="trainer-dashboard">
-      <nav className="sidebar">
-        <h2>User Dashboard</h2>
-        <ul>
-          <li><a href="/Roles/Trainer/UserDashboard">Dashboard</a></li>
-          <li><a href="../Trainer/ViewRequests">Requests</a></li>
-          <li><a href="/Roles/Trainer/Settings">Settings</a></li>
-          <li><button onClick={handleLogout} className="logout-btn">Logout</button></li>
-        </ul>
-      </nav>
-
+      <TrainerSidebar handleLogout={handleLogout} />
       <div className="main-content">
         <h1>Welcome to Your Dashboard!</h1>
         {userId ? <p>Logged in as: <strong>{userId}</strong></p> : <p>Loading...</p>}

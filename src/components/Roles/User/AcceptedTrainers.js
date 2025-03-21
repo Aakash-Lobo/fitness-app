@@ -5,8 +5,15 @@ const AcceptedTrainers = () => {
   const [trainers, setTrainers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [showModal, setShowModal] = useState(false);
+  const [showCancelModal, setShowCancelModal] = useState(false);
+  const [showBookingModal, setShowBookingModal] = useState(false);
   const [selectedTrainer, setSelectedTrainer] = useState(null);
+  const [sessionDetails, setSessionDetails] = useState({
+    date: "",
+    time: "",
+    duration: "",
+    notes: "",
+  });
 
   useEffect(() => {
     const fetchAcceptedTrainers = async () => {
@@ -33,13 +40,13 @@ const AcceptedTrainers = () => {
     fetchAcceptedTrainers();
   }, []);
 
-  // Handle delete button click (opens confirmation modal)
-  const handleDeleteClick = (trainer) => {
+  // Handle cancel subscription
+  const handleCancelClick = (trainer) => {
     setSelectedTrainer(trainer);
-    setShowModal(true);
+    setShowCancelModal(true);
   };
 
-  // Function to cancel trainer
+  // Confirm cancel trainer subscription
   const confirmCancelTrainer = async () => {
     if (!selectedTrainer || !selectedTrainer._id) {
       console.error("Error: Trainer ID is missing.");
@@ -63,9 +70,44 @@ const AcceptedTrainers = () => {
         )
       );
 
-      setShowModal(false);
+      setShowCancelModal(false);
     } catch (error) {
       console.error("Error cancelling trainer:", error);
+    }
+  };
+
+  // Handle book session button click
+  const handleBookSessionClick = (trainer) => {
+    setSelectedTrainer(trainer);
+    setShowBookingModal(true);
+  };
+
+  // Handle form input change
+  const handleInputChange = (e) => {
+    setSessionDetails({ ...sessionDetails, [e.target.name]: e.target.value });
+  };
+
+  // Confirm booking a session
+  const confirmBookSession = async () => {
+    try {
+      const email = sessionStorage.getItem("email") || localStorage.getItem("email");
+
+      const response = await fetch("http://localhost:5000/user/bookSession", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userEmail: email,
+          trainerId: selectedTrainer._id,
+          ...sessionDetails,
+        }),
+      });
+
+      if (!response.ok) throw new Error("Failed to book session.");
+
+      alert("Session booked successfully!");
+      setShowBookingModal(false);
+    } catch (error) {
+      console.error("Error booking session:", error);
     }
   };
 
@@ -98,7 +140,10 @@ const AcceptedTrainers = () => {
               {trainers.map((trainer) => (
                 <li key={trainer._id}>
                   {trainer.name} - {trainer.specialization}
-                  <button className="delete-btn" onClick={() => handleDeleteClick(trainer)}>
+                  <button className="book-btn" onClick={() => handleBookSessionClick(trainer)}>
+                    Book Session
+                  </button>
+                  <button className="delete-btn" onClick={() => handleCancelClick(trainer)}>
                     Cancel Subscription
                   </button>
                 </li>
@@ -108,14 +153,39 @@ const AcceptedTrainers = () => {
         )}
       </div>
 
-      {/* Confirmation Modal */}
-      {showModal && (
+      {/* Cancel Subscription Modal */}
+      {showCancelModal && (
         <div className="modal-overlay">
           <div className="modal-content">
             <p>Are you sure you want to cancel your subscription with {selectedTrainer?.name}?</p>
             <div className="modal-buttons">
               <button className="confirm-btn" onClick={confirmCancelTrainer}>Yes, Cancel</button>
-              <button className="cancel-btn" onClick={() => setShowModal(false)}>No</button>
+              <button className="cancel-btn" onClick={() => setShowCancelModal(false)}>No</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Book Session Modal */}
+      {showBookingModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <h3>Book a Session with {selectedTrainer?.name}</h3>
+            <label>Date:</label>
+            <input type="date" name="date" onChange={handleInputChange} required />
+
+            <label>Time:</label>
+            <input type="time" name="time" onChange={handleInputChange} required />
+
+            <label>Duration (in minutes):</label>
+            <input type="number" name="duration" onChange={handleInputChange} required />
+
+            <label>Notes:</label>
+            <textarea name="notes" onChange={handleInputChange} />
+
+            <div className="modal-buttons">
+              <button className="confirm-btn" onClick={confirmBookSession}>Confirm Booking</button>
+              <button className="cancel-btn" onClick={() => setShowBookingModal(false)}>Cancel</button>
             </div>
           </div>
         </div>
