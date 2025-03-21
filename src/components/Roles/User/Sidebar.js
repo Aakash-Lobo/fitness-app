@@ -40,8 +40,8 @@ const Sidebar = ({ handleLogout }) => {
           {showSessionsSubmenu && (
             <ul className="submenu">
               <li><a href="/Roles/User/UpcomingSession">Current</a></li>
-              <li><a href="/Roles/User/Sessions/History">History</a></li>
-              <li><a href="/Roles/User/Sessions/Progress">Progress</a></li>
+              <li><a href="/Roles/User/UserSessionHistory">History</a></li>
+              <li><a href="/Roles/User/UserProgress">Progress</a></li>
             </ul>
           )}
         </li>

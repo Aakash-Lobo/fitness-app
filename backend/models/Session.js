@@ -7,7 +7,7 @@ const sessionSchema = new mongoose.Schema({
   time: { type: String, required: true },
   duration: { type: Number, required: true },
   notes: { type: String },
-  status: { type: String, enum: ["Scheduled" , "Completed", "Cancelled"]},
+  status: { type: String, enum: ["Scheduled" , "Completed", "Cancelled"],default: "Scheduled" },
 });
 
 module.exports = mongoose.model("Session", sessionSchema);

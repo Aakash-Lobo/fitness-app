@@ -158,6 +158,157 @@ router.get("/upcomingSessions", async (req, res) => {
   }
 });
 
+router.get("/completedSessions", async (req, res) => {
+  try {
+    const { email } = req.query;
+    if (!email) return res.status(400).json({ error: "User email is required" });
+
+    // Fetch completed sessions for the user
+    let sessions = await Session.find({ userEmail: email, status: "Completed" });
+
+    // Extract unique trainer IDs from the sessions
+    const trainerIds = [...new Set(sessions.map(session => session.trainerId))];
+
+    // Fetch trainer names based on IDs
+    const trainers = await User.find({ _id: { $in: trainerIds } });
+
+    // Create a mapping of trainerId -> trainer name
+    const trainerMap = {};
+    trainers.forEach(trainer => {
+      trainerMap[trainer._id] = trainer.name;
+    });
+
+    // Attach trainerName to each session
+    sessions = sessions.map(session => ({
+      ...session.toObject(),
+      trainerName: trainerMap[session.trainerId] || "Unknown",
+    }));
+
+    res.json(sessions);
+  } catch (error) {
+    console.error("Error fetching user session history:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+router.get("/sessions", async (req, res) => {
+  try {
+    const { email } = req.query;
+    if (!email) return res.status(400).json({ error: "Email is required" });
+
+    // Fetch past sessions (completed & canceled)
+    const sessions = await Session.find({
+      userEmail: email,
+      status: { $in: ["Completed", "Canceled"] },
+    });
+
+    // Fetch trainer details
+    const trainerIds = [...new Set(sessions.map(session => session.trainerId))];
+    const trainers = await User.find({ _id: { $in: trainerIds } }, "name _id");
+    const trainerMap = Object.fromEntries(trainers.map(trainer => [trainer._id, trainer.name]));
+
+    // Aggregate stats
+    const totalHours = sessions.reduce((sum, s) => sum + s.duration / 60, 0).toFixed(1);
+    const completedSessions = sessions.filter(s => s.status === "Completed").length;
+    const canceledSessions = sessions.filter(s => s.status === "Canceled").length;
+
+    // Attach trainer names to sessions
+    const enrichedSessions = sessions.map(session => ({
+      ...session.toObject(),
+      trainerName: trainerMap[session.trainerId] || "Unknown",
+    }));
+
+    res.json({
+      sessions: enrichedSessions,
+      stats: { totalHours, completedSessions, canceledSessions },
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Server error: " + error.message });
+  }
+});
+
+const formatDate = (date) => date.toISOString().split("T")[0];
+
+// Get the first day of the week (Monday)
+const getStartOfWeek = () => {
+  const date = new Date();
+  const day = date.getDay(); // 0 (Sunday) to 6 (Saturday)
+  const diff = day === 0 ? 6 : day - 1; // Adjust if Sunday
+  date.setDate(date.getDate() - diff);
+  return formatDate(date);
+};
+
+// Get first day of the current and previous month
+const getStartOfMonth = (monthsAgo = 0) => {
+  const date = new Date();
+  date.setMonth(date.getMonth() - monthsAgo, 1);
+  return formatDate(date);
+};
+
+// Get first day of the year
+const getStartOfYear = () => {
+  const date = new Date();
+  date.setMonth(0, 1);
+  return formatDate(date);
+};
+
+router.get("/progress", async (req, res) => {
+  try {
+    const { email } = req.query;
+    if (!email) {
+      return res.status(400).json({ error: "User email is required" });
+    }
+
+    const startOfWeek = getStartOfWeek();
+    const startOfMonth = getStartOfMonth();
+    const startOfLastMonth = getStartOfMonth(1);
+    const startOfYear = getStartOfYear();
+
+    // Number of visits
+    const visitsThisWeek = await Session.countDocuments({ userEmail: email, date: { $gte: startOfWeek } });
+    const visitsPrevMonth = await Session.countDocuments({ userEmail: email, date: { $gte: startOfLastMonth, $lt: startOfMonth } });
+    const visitsThisMonth = await Session.countDocuments({ userEmail: email, date: { $gte: startOfMonth } });
+
+    // Total duration of sessions
+    const getTotalDuration = async (startDate, endDate = null) => {
+      const matchQuery = { userEmail: email, date: { $gte: startDate } };
+      if (endDate) matchQuery.date.$lt = endDate;
+
+      const result = await Session.aggregate([
+        { $match: matchQuery },
+        { $group: { _id: null, totalDuration: { $sum: "$duration" } } }
+      ]);
+
+      return result[0]?.totalDuration || 0;
+    };
+
+    const durationPrevMonth = await getTotalDuration(startOfLastMonth, startOfMonth);
+    const durationThisMonth = await getTotalDuration(startOfMonth);
+
+    // Yearly session stats
+    const yearlySessions = await Session.aggregate([
+      { $match: { userEmail: email, date: { $gte: startOfYear } } },
+      { $group: { _id: { $substr: ["$date", 5, 2] }, count: { $sum: 1 } } }, // Extracts month
+      { $sort: { _id: 1 } }
+    ]);
+
+    // Get all session dates for calendar
+    const sessionDates = await Session.find({ userEmail: email }, "date");
+
+    res.json({
+      visitsThisWeek,
+      visitsPrevMonth,
+      visitsThisMonth,
+      durationPrevMonth,
+      durationThisMonth,
+      yearlySessions,
+      sessionDates: sessionDates.map((s) => s.date),
+    });
+
+  } catch (error) {
+    res.status(500).json({ error: "Error fetching progress data" });
+  }
+});
 
 
 module.exports = router;

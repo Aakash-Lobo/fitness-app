@@ -13,6 +13,8 @@ import UpcomingSessions from "./components/Roles/User/UpcomingSession";
 import TrainerUpcomingSessions from "./components/Roles/Trainer/TrainerUpcomingSessions";
 import TrainerSessionHistory from "./components/Roles/Trainer/TrainerSessionHistory";
 import ManageUsers from "./components/Roles/Admin/ManageUsers";
+import UserSessionHistory from "./components/Roles/User/UserSessionHistory";
+import UserProgress from "./components/Roles/User/UserProgress";
 
 const Navigation = () => {
   const location = useLocation();
@@ -48,9 +50,11 @@ const App = () => {
         <Route path="/roles/trainer/viewrequests" element={<ViewRequests />} />
         <Route path="/roles/user/AcceptedTrainers" element={<AcceptedTrainers />} />
         <Route path="/roles/user/UpcomingSession" element={<UpcomingSessions />} />
+        <Route path="/roles/user/UserSessionHistory" element={<UserSessionHistory />} />
+        <Route path="/roles/user/UserProgress" element={<UserProgress />} />
         <Route path="/roles/trainer/trainerupcomingsessions" element={<TrainerUpcomingSessions />} />
         <Route path="/roles/trainer/trainersessionhistory" element={<TrainerSessionHistory />} />
-         <Route path="/roles/trainer/trainersessionhistory" element={<TrainerSessionHistory />} />
+        <Route path="/roles/trainer/trainersessionhistory" element={<TrainerSessionHistory />} />
       </Routes>
     </Router>
   );
