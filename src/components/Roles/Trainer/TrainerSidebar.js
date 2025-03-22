@@ -15,7 +15,7 @@ const TrainerSidebar = ({ handleLogout }) => {
           <a href="/Roles/Trainer/ViewRequests">Requests</a>
         </li>
         <li>
-          <a href="/Roles/Trainer/Subscriptions">Subscriptions</a>
+          <a href="/Roles/Trainer/TrainerBookings">Subscriptions</a>
         </li>
 
         {/* Training Sessions Dropdown */}
@@ -30,7 +30,7 @@ const TrainerSidebar = ({ handleLogout }) => {
             <ul className="submenu">
               <li><a href="/Roles/Trainer/TrainerUpcomingSessions">Upcoming</a></li>
               <li><a href="/Roles/Trainer/TrainerSessionHistory">History</a></li>
-              <li><a href="/Roles/Trainer/Progress">Progress</a></li>
+              <li><a href="/Roles/Trainer/TrainerProgress">Progress</a></li>
             </ul>
           )}
         </li>
