@@ -4,6 +4,7 @@ const User = require("../models/User");// Ensure Trainer model exists
 const Booking = require("../models/Booking"); 
 const Session = require("../models/Session");
 const Gym = require("../models/Gym"); 
+const Notification = require("../models/Notification");
 
 // GET all approved trainers
 router.get("/trainers", async (req, res) => {
@@ -329,6 +330,35 @@ router.get("/gyms/:gymId/trainers", async (req, res) => {
     res.json(gym.trainers);
   } catch (error) {
     res.status(500).json({ error: "Failed to fetch trainers" });
+  }
+});
+
+router.get("/notifications", async (req, res) => {
+  try {
+    const { userId } = req.query;
+    if (!userId) {
+      return res.status(400).json({ error: "User ID is required" });
+    }
+
+    const notifications = await Notification.find({ userId }).sort({ createdAt: -1 });
+
+    res.json(notifications);
+  } catch (error) {
+    console.error("Error fetching notifications:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
+
+// Delete a notification by ID
+router.delete("/notifications/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    await Notification.findByIdAndDelete(id);
+    res.json({ message: "Notification deleted" });
+  } catch (error) {
+    console.error("Error deleting notification:", error);
+    res.status(500).json({ error: "Server error" });
   }
 });
 

@@ -48,7 +48,7 @@ const Sidebar = ({ handleLogout }) => {
         </li>
 
         <li>
-          <a href="/Roles/User/Settings">Settings</a>
+          <a href="/Roles/User/UserNotification">Notification</a>
         </li>
         
         <li>

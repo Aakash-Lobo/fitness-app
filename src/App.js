@@ -19,6 +19,7 @@ import ManageGyms from "./components/Roles/Admin/ManageGym";
 import SelectGym from "./components/Roles/User/SelectGym";
 import TrainerBookings from "./components/Roles/Trainer/TrainerBookings";
 import TrainerProgress from "./components/Roles/Trainer/TrainerProgress";
+import UserNotifications from "./components/Roles/User/UserNotification";
 
 const Navigation = () => {
   const location = useLocation();
@@ -58,6 +59,7 @@ const App = () => {
         <Route path="/roles/user/UpcomingSession" element={<UpcomingSessions />} />
         <Route path="/roles/user/UserSessionHistory" element={<UserSessionHistory />} />
         <Route path="/roles/user/UserProgress" element={<UserProgress />} />
+        <Route path="/roles/user/UserNotification" element={<UserNotifications />} />
         <Route path="/roles/trainer/trainerupcomingsessions" element={<TrainerUpcomingSessions />} />
         <Route path="/roles/trainer/trainersessionhistory" element={<TrainerSessionHistory />} />
         <Route path="/roles/trainer/trainersessionhistory" element={<TrainerSessionHistory />} />
