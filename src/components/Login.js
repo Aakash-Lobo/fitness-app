@@ -35,14 +35,25 @@ const Login = () => {
       const data = await response.json();
       console.log("Full API Response:", data); // Debugging
   
+      // if (response.ok) {
+      //   if (!data.user || !data.user._id) {
+      //     console.error("Error: `user` object or `_id` is missing in response");
+      //     alert("Login failed: Invalid response format");
+      //     return;
+      //   }
+
       if (response.ok) {
-        if (!data.user || !data.user._id) {
-          console.error("Error: `user` object or `_id` is missing in response");
-          alert("Login failed: Invalid response format");
+        if (!data?.user) {
+          alert("Login failed: No user data returned.");
           return;
         }
   
-        const { _id, role, status, email } = data.user; 
+        const { _id, role, status, email, verified  } = data.user; 
+
+        if (!verified) {
+          alert("Please verify your email before logging in.");
+          return;
+        }
         console.log("Extracted userId:", _id); // Debugging
   
         sessionStorage.setItem("userId", _id);

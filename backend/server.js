@@ -7,6 +7,10 @@ const cors = require("cors");
 const bcrypt = require("bcryptjs");
 const LocalStrategy = require("passport-local").Strategy;
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
+const nodemailer = require("nodemailer");
+const sendEmail = require("./sendEmail");
+const crypto = require("crypto"); // Add this at the top
+
 
 const app = express();
 
@@ -45,15 +49,41 @@ const UserSchema = new mongoose.Schema({
   avatar: { type: String },
   role: { type: String, enum: ["user", "admin", "trainer"], default: "user" },
   status: { type: String, enum: ["pending", "approved", "declined"], default: "pending" },
+  verified: { type: Boolean, default: false }, // ✅ New field for email verification
+  verificationToken: { type: String },
 });
 
 const User = mongoose.model("User", UserSchema);
 
 // Local Strategy for Manual Registration/Login
+// passport.use(
+//   new LocalStrategy({ usernameField: "email" }, async (email, password, done) => {
+//     const user = await User.findOne({ email });
+//     if (!user) return done(null, false, { message: "User not found" });
+
+//     if (user.status === "pending") {
+//       return done(null, false, { message: "Your account is pending approval." });
+//     }
+
+//     if (user.status === "declined") {
+//       return done(null, false, { message: "Your account has been declined." });
+//     }
+
+//     const isMatch = await bcrypt.compare(password, user.password);
+//     if (!isMatch) return done(null, false, { message: "Incorrect password" });
+
+//     return done(null, user);
+//   })
+// );
+
 passport.use(
   new LocalStrategy({ usernameField: "email" }, async (email, password, done) => {
     const user = await User.findOne({ email });
     if (!user) return done(null, false, { message: "User not found" });
+
+    if (!user.verified) {
+      return done(null, false, { message: "Please verify your email before logging in." });
+    }
 
     if (user.status === "pending") {
       return done(null, false, { message: "Your account is pending approval." });
@@ -105,35 +135,87 @@ passport.deserializeUser(async (id, done) => {
   done(null, user);
 });
 
-// Manual Registration Route
+// // Manual Registration Route
+// app.post("/register", async (req, res) => {
+//   try {
+//       const { name, email, password } = req.body;
+
+//       // Check if user already exists
+//       let existingUser = await User.findOne({ email });
+//       if (existingUser) {
+//           return res.status(400).json({ message: "User already exists" });
+//       }
+
+//       // Hash password
+//       const hashedPassword = await bcrypt.hash(password, 10);
+
+//       // Create new user with 'pending' status
+//       const newUser = new User({
+//           name,
+//           email,
+//           password: hashedPassword,
+//           role: "user",  // Default role is "user"
+//           status: "pending" // Default status is "pending"
+//       });
+
+//       await newUser.save();
+//       res.status(201).json({ message: "User registered successfully. Waiting for admin approval." });
+
+//   } catch (error) {
+//       console.error(error);
+//       res.status(500).json({ message: "Server error" });
+//   }
+// });
+
 app.post("/register", async (req, res) => {
+  const { name, email, password } = req.body;
+
   try {
-      const { name, email, password } = req.body;
+    const userExists = await User.findOne({ email });
+    if (userExists) return res.status(400).json({ message: "User already exists" });
 
-      // Check if user already exists
-      let existingUser = await User.findOne({ email });
-      if (existingUser) {
-          return res.status(400).json({ message: "User already exists" });
-      }
+    const verificationToken = crypto.randomBytes(32).toString("hex");
 
-      // Hash password
-      const hashedPassword = await bcrypt.hash(password, 10);
+    const user = new User({
+      name,
+      email,
+      password,
+      verified: false,
+      verificationToken,
+    });
 
-      // Create new user with 'pending' status
-      const newUser = new User({
-          name,
-          email,
-          password: hashedPassword,
-          role: "user",  // Default role is "user"
-          status: "pending" // Default status is "pending"
-      });
+    await user.save();
 
-      await newUser.save();
-      res.status(201).json({ message: "User registered successfully. Waiting for admin approval." });
+    const verificationLink = `http://localhost:5000/auth/verify?token=${verificationToken}`;
+    await sendEmail(email, "Verify Your Email", `Click here to verify your email: ${verificationLink}`);
 
+    res.status(201).json({ message: "User registered. Please verify your email." });
   } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Server error" });
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+app.post("/verify/:email", async (req, res) => {
+  try {
+    const { email } = req.params;
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(400).json({ success: false, message: "User not found" });
+    }
+
+    if (user.verified) {
+      return res.status(400).json({ success: false, message: "User already verified" });
+    }
+
+    user.verified = true;
+    await user.save();
+
+    res.json({ success: true, message: "Email verified successfully" });
+  } catch (error) {
+    console.error("Error verifying email:", error);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 });
 

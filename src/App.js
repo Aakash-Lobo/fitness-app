@@ -20,6 +20,7 @@ import SelectGym from "./components/Roles/User/SelectGym";
 import TrainerBookings from "./components/Roles/Trainer/TrainerBookings";
 import TrainerProgress from "./components/Roles/Trainer/TrainerProgress";
 import UserNotifications from "./components/Roles/User/UserNotification";
+import VerifyEmail from "./components/VerifyEmail";
 
 const Navigation = () => {
   const location = useLocation();
@@ -65,6 +66,7 @@ const App = () => {
         <Route path="/roles/trainer/trainersessionhistory" element={<TrainerSessionHistory />} />
         <Route path="/roles/trainer/trainerbookings" element={<TrainerBookings />} />
         <Route path="/roles/trainer/trainerprogress" element={<TrainerProgress />} />
+        <Route path="/verify/:email" element={<VerifyEmail />} />
       </Routes>
     </Router>
   );
