@@ -50,10 +50,10 @@ const Login = () => {
   
         const { _id, role, status, email, verified  } = data.user; 
 
-        if (!verified) {
-          alert("Please verify your email before logging in.");
-          return;
-        }
+        // if (!verified) {
+        //   alert("Please verify your email before logging in.");
+        //   return;
+        // }
         console.log("Extracted userId:", _id); // Debugging
   
         sessionStorage.setItem("userId", _id);

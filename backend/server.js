@@ -81,9 +81,9 @@ passport.use(
     const user = await User.findOne({ email });
     if (!user) return done(null, false, { message: "User not found" });
 
-    if (!user.verified) {
-      return done(null, false, { message: "Please verify your email before logging in." });
-    }
+    // if (!user.verified) {
+    //   return done(null, false, { message: "Please verify your email before logging in." });
+    // }
 
     if (user.status === "pending") {
       return done(null, false, { message: "Your account is pending approval." });
@@ -93,12 +93,15 @@ passport.use(
       return done(null, false, { message: "Your account has been declined." });
     }
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return done(null, false, { message: "Incorrect password" });
+    // ✅ Plain-text comparison (not secure, but for testing/dev)
+    if (password !== user.password) {
+      return done(null, false, { message: "Incorrect password" });
+    }
 
     return done(null, user);
   })
 );
+
 
 
 // Google OAuth Strategy
@@ -242,7 +245,8 @@ app.post("/login", (req, res, next) => {
           role: user.role,
         },
       });
-    });
+    }
+  );
   })(req, res, next);
 });
 
