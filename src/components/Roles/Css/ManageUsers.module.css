@@ -1,0 +1,175 @@
+.mainContent {
+    flex: 1;
+    padding: 30px;
+    margin-top: 80px;
+  }
+  
+  .header {
+    margin-bottom: 30px;
+  }
+  
+  .header h1 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #1c2b36;
+  }
+  
+  .userTable {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  
+  .userTable th,
+  .userTable td {
+    padding: 16px 20px;
+    text-align: left;
+  }
+  
+  .userTable thead {
+    background-color: #999c9fce;
+    color: white;
+  }
+  
+  .userTable tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  
+  .editBtn, .deleteBtn {
+    padding: 8px 14px;
+    margin-right: 8px;
+    border: none;
+    border-radius: 5px;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  
+  .editBtn {
+    background-color: #4caf50;
+    color: white;
+  }
+  
+  .editBtn:hover {
+    background-color: #45a049;
+  }
+  
+  .deleteBtn {
+    background-color: #f44336;
+    color: white;
+  }
+  
+  .deleteBtn:hover {
+    background-color: #d32f2f;
+  }
+  
+  /* 弹窗背景 */
+  .popupOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  /* 弹窗内容 */
+  .popupContent {
+    background-color: white;
+    padding: 30px;
+    width: 400px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.3s ease;
+  }
+  
+  @keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9);}
+    to { opacity: 1; transform: scale(1);}
+  }
+  
+  .popupContent h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    text-align: center;
+  }
+  
+  /* 表单输入 */
+  .popupContent input,
+  .popupContent select,
+  .popupContent textarea {
+    width: 100%;
+    margin-bottom: 16px;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+  }
+  
+  /* 弹窗按钮区 */
+  .popupButtons {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 10px;
+  }
+  
+  .saveBtn {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  
+  .saveBtn:hover {
+    background-color: #45a049;
+  }
+  
+  .cancelBtn {
+    background-color: #757575;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  
+  .cancelBtn:hover {
+    background-color: #616161;
+  }
+  
+  .deleteConfirmBtn {
+    background-color: #f44336;
+    color: white;
+    border: none;
+    padding: 10px 18px;
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  
+  .deleteConfirmBtn:hover {
+    background-color: #d32f2f;
+  }
+  
+  .error {
+    color: red;
+    font-weight: bold;
+  }
+
+  .addbtn{
+    background-color: #6cc8e9;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    font-weight: bold;
+  }

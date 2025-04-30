@@ -110,7 +110,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "http://localhost:5000/auth/google/callback",
+      callbackURL: "http://localhost:5001/auth/google/callback",
     },
     async (accessToken, refreshToken, profile, done) => {
       let user = await User.findOne({ googleId: profile.id });
@@ -189,7 +189,7 @@ app.post("/register", async (req, res) => {
 
     await user.save();
 
-    const verificationLink = `http://localhost:5000/auth/verify?token=${verificationToken}`;
+    const verificationLink = `http://localhost:5001/auth/verify?token=${verificationToken}`;
     await sendEmail(email, "Verify Your Email", `Click here to verify your email: ${verificationLink}`);
 
     res.status(201).json({ message: "User registered. Please verify your email." });
@@ -363,6 +363,6 @@ const trainerRoutes = require("./routes/trainerRoutes"); // Correct import
 app.use("/trainer", trainerRoutes);
 
 // Start Server
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 

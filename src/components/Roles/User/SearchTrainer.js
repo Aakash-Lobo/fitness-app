@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { AiOutlineAlert } from "react-icons/ai";
 import "../Css/UserDashboard.css";
-
+import Sidebar from "./Sidebar";
 
 const SearchTrainers = () => {
   const [trainers, setTrainers] = useState([]);
@@ -21,8 +22,9 @@ const SearchTrainers = () => {
 
   useEffect(() => {
     fetchTrainers();
-    
-    const storedEmail = sessionStorage.getItem("email") || localStorage.getItem("email");
+
+    const storedEmail =
+      sessionStorage.getItem("email") || localStorage.getItem("email");
     if (storedEmail) {
       setEmail(storedEmail);
     } else {
@@ -40,7 +42,9 @@ const SearchTrainers = () => {
   const fetchTrainers = async () => {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:5000/user/trainers", { credentials: "include" });
+      const response = await fetch("http://localhost:5001/user/trainers", {
+        credentials: "include",
+      });
       if (!response.ok) throw new Error("Failed to fetch trainers");
       const data = await response.json();
       setTrainers(data);
@@ -55,8 +59,10 @@ const SearchTrainers = () => {
     try {
       const pendingStatus = {};
       for (const trainer of trainers) {
-        const response = await fetch(`http://localhost:5000/user/check-booking?userEmail=${email}&trainerId=${trainer._id}`);
- const data = await response.json();
+        const response = await fetch(
+          `http://localhost:5001/user/check-booking?userEmail=${email}&trainerId=${trainer._id}`
+        );
+        const data = await response.json();
         pendingStatus[trainer._id] = data.pending;
       }
       setPendingBookings(pendingStatus);
@@ -87,17 +93,20 @@ const SearchTrainers = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/user/request-trainer", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userEmail: email,
-          trainerId: selectedTrainer._id,
-          fitnessGoal: formData.fitnessGoal,
-          experienceLevel: formData.experienceLevel,
-          preferredTime: formData.preferredTime,
-        }),
-      });
+      const response = await fetch(
+        "http://localhost:5001/user/request-trainer",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userEmail: email,
+            trainerId: selectedTrainer._id,
+            fitnessGoal: formData.fitnessGoal,
+            experienceLevel: formData.experienceLevel,
+            preferredTime: formData.preferredTime,
+          }),
+        }
+      );
 
       const result = await response.json();
       if (response.ok) {
@@ -112,22 +121,13 @@ const SearchTrainers = () => {
     }
   };
 
-  const filteredTrainers = trainers.filter(trainer =>
+  const filteredTrainers = trainers.filter((trainer) =>
     trainer.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
-
+  const [showTrainerSubmenu, setShowTrainerSubmenu] = useState(false);
   return (
     <div className="user-dashboard">
-      {/* Sidebar */}
-      <nav className="sidebar">
-        <h2>User Dashboard</h2>
-        <ul>
-          <li><a href="/Roles/User/UserDashboard">Dashboard</a></li>
-          <li><button onClick={() => navigate("/Roles/User/SearchTrainers")}>View Trainers</button></li>
-          <li><a href="/Roles/User/Settings">Settings</a></li>
-        </ul>
-      </nav>
-
+      <Sidebar />
       {/* Main Content */}
       <div className="main-content">
         <h1>Search Trainers</h1>
@@ -155,6 +155,7 @@ const SearchTrainers = () => {
                   <tr>
                     <th>Name</th>
                     <th>Email</th>
+                    <th>Specialization</th>
                     <th>Action</th>
                   </tr>
                 </thead>
@@ -163,13 +164,21 @@ const SearchTrainers = () => {
                     <tr key={trainer._id}>
                       <td>{trainer.name}</td>
                       <td>{trainer.email}</td>
+                      <td><span className="tag">{trainer.specialization}</span></td>
                       <td>
-                        <button 
-                          onClick={() => openModal(trainer)} 
+                        <button
+                          onClick={() => openModal(trainer)}
                           disabled={pendingBookings[trainer._id]}
-                          className={pendingBookings[trainer._id] ? "disabled-button" : ""}
+                          // className={pendingBookings[trainer._id] ? "disabled-button" : ""}
+                          className={
+                            pendingBookings[trainer._id]
+                              ? "pending-button"
+                              : "request-button"
+                          }
                         >
-                          {pendingBookings[trainer._id] ? "Pending..." : "Request"}
+                          {pendingBookings[trainer._id]
+                            ? "Pending..."
+                            : "Request"}
                         </button>
                       </td>
                     </tr>
@@ -185,14 +194,30 @@ const SearchTrainers = () => {
       {showModal && (
         <div className="modal">
           <div className="modal-content">
-            <h2>Book {selectedTrainer.name}</h2>
+            <div className="modal-header">
+              <AiOutlineAlert className="modal-icon" />
+              <span>
+                Please fill in the following details to book your trainer
+              </span>
+            </div>
+            <h2>You have selected Trainer: {selectedTrainer.name}</h2>
             <label>
               Fitness Goal:
-              <input type="text" name="fitnessGoal" value={formData.fitnessGoal} onChange={handleFormChange} />
+              <input
+                type="text"
+                className="fitnessgoal"
+                name="fitnessGoal"
+                value={formData.fitnessGoal}
+                onChange={handleFormChange}
+              />
             </label>
             <label>
               Experience Level:
-              <select name="experienceLevel" value={formData.experienceLevel} onChange={handleFormChange}>
+              <select
+                name="experienceLevel"
+                value={formData.experienceLevel}
+                onChange={handleFormChange}
+              >
                 <option value="">Select</option>
                 <option value="Beginner">Beginner</option>
                 <option value="Intermediate">Intermediate</option>
@@ -201,15 +226,26 @@ const SearchTrainers = () => {
             </label>
             <label>
               Preferred Training Time:
-              <input type="text" name="preferredTime" value={formData.preferredTime} onChange={handleFormChange} />
+              {/* <input type="text" name="preferredTime" value={formData.preferredTime} onChange={handleFormChange} /> */}
+              <input
+                type="datetime-local"
+                name="preferredTime"
+                value={formData.preferredTime}
+                onChange={handleFormChange}
+              />
             </label>
-            <button onClick={handleRequest}>Submit</button>
-            <button onClick={closeModal} className="cancel-btn">Cancel</button>
+            <div className="modal-buttons">
+              <button onClick={handleRequest} className="submit-btn">
+                Submit
+              </button>
+              <button onClick={closeModal} className="cancel-btn">
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       )}
     </div>
   );
 };
-
 export default SearchTrainers;

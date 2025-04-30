@@ -17,7 +17,7 @@ const UpcomingSessions = () => {
           return;
         }
 
-        const response = await fetch(`http://localhost:5000/user/upcomingSessions?email=${email}`);
+        const response = await fetch(`http://localhost:5001/user/upcomingSessions?email=${email}`);
         if (!response.ok) throw new Error("Failed to fetch sessions.");
 
         const data = await response.json();

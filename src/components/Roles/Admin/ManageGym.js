@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import "../Css/AdminDashboard.css";
+import Sidebar from "./AdminSidebar";
+import styles from "../Css/ManageUsers.module.css";
 
 const ManageGyms = () => {
   const [gyms, setGyms] = useState([]);
@@ -16,7 +17,6 @@ const ManageGyms = () => {
     facilities: "",
     trainers: [],
   });
-  const navigate = useNavigate();
 
   useEffect(() => {
     fetchGyms();
@@ -26,7 +26,7 @@ const ManageGyms = () => {
   const fetchGyms = async () => {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:5000/admin/gyms", {
+      const response = await fetch("http://localhost:5001/admin/gyms", {
         credentials: "include",
       });
 
@@ -43,7 +43,7 @@ const ManageGyms = () => {
 
   const fetchTrainers = async () => {
     try {
-      const response = await fetch("http://localhost:5000/admin/trainers", {
+      const response = await fetch("http://localhost:5001/admin/trainers", {
         credentials: "include",
       });
       if (!response.ok) throw new Error("Failed to fetch trainers");
@@ -58,7 +58,7 @@ const ManageGyms = () => {
     if (!window.confirm("Are you sure you want to delete this gym?")) return;
     
     try {
-      const response = await fetch(`http://localhost:5000/admin/gyms/${gymId}`, {
+      const response = await fetch(`http://localhost:5001/admin/gyms/${gymId}`, {
         method: "DELETE",
         credentials: "include",
       });
@@ -73,7 +73,7 @@ const ManageGyms = () => {
 
   const handleAddGym = async () => {
     try {
-      const response = await fetch("http://localhost:5000/admin/gyms", {
+      const response = await fetch("http://localhost:5001/admin/gyms", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -98,22 +98,12 @@ const ManageGyms = () => {
 
   return (
     <div className="admin-container">
-      <nav className="sidebar">
-        <h2>Admin Panel</h2>
-        <ul>
-          <li><a href="/Roles/Admin/AdminDashboard">Dashboard</a></li>
-          <li><a href="/Roles/Admin/ManageUsers">Manage Users</a></li>
-          <li><a href="/Roles/Admin/ManageTrainers">Manage Trainers</a></li>
-          <li><a href="/Roles/Admin/ManageGyms">Manage Gyms</a></li>
-          <li><a href="/Roles/Admin/Settings">Settings</a></li>
-          <li><button className="logout-btn" onClick={() => navigate("/Register")}>Logout</button></li>
-        </ul>
-      </nav>
+      <Sidebar />
 
-      <div className="main-content">
-        <div className="header">
+      <div className={styles.mainContent}>
+        <div className={styles.header}>
           <h1>Manage Gyms</h1>
-          <button className="add-btn" onClick={() => setShowPopup(true)}>Add Gym</button>
+          <button className={styles.addbtn} onClick={() => setShowPopup(true)}>Add Gym</button>
         </div>
 
         {loading ? (
@@ -123,7 +113,7 @@ const ManageGyms = () => {
         ) : gyms.length === 0 ? (
           <p>No gyms found.</p>
         ) : (
-          <table className="gym-table">
+          <table className={styles.userTable}>
             <thead>
               <tr>
                 <th>Name</th>
@@ -145,7 +135,7 @@ const ManageGyms = () => {
                   <td>{gym.facilities.join(", ")}</td>
                   <td>{gym.trainers?.map(trainer => trainer.name).join(", ") || "None"}</td>
                   <td>
-                    <button className="delete-btn" onClick={() => handleDelete(gym._id)}>Delete</button>
+                    <button className={styles.deleteBtn} onClick={() => handleDelete(gym._id)}>Delete</button>
                   </td>
                 </tr>
               ))}
@@ -155,8 +145,8 @@ const ManageGyms = () => {
       </div>
 
       {showPopup && (
-        <div className="popup">
-          <div className="popup-content">
+        <div className={styles.popupOverlay}>
+            <div className={styles.popupContent}>
             <h2>Add Gym</h2>
             <label>Name:</label>
             <input type="text" value={newGym.name} onChange={(e) => setNewGym({ ...newGym, name: e.target.value })} />
@@ -174,8 +164,8 @@ const ManageGyms = () => {
                 <option key={trainer._id} value={trainer._id}>{trainer.name}</option>
               ))}
             </select>
-            <button onClick={handleAddGym}>Add</button>
-            <button onClick={() => setShowPopup(false)}>Cancel</button>
+            <button className={styles.saveBtn} onClick={handleAddGym}>Add</button>
+            <button className={styles.cancelBtn} onClick={() => setShowPopup(false)}>Cancel</button>
           </div>
         </div>
       )}

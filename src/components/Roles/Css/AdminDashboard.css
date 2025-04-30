@@ -39,20 +39,11 @@
 
 .sidebar ul li a:hover {
   background-color: #34495e;
+  color:#ffcc00;
 }
-
-.logout-btn {
-  background-color: #e74c3c;
-  color: white;
-  padding: 10px;
-  border: none;
-  width: 100%;
-  cursor: pointer;
-  border-radius: 5px;
-}
-
-.logout-btn:hover {
-  background-color: #c0392b;
+.sidebar button:hover {
+  color:#ffcc00;
+  background-color: #34495e;
 }
 
 /* Main Content */
@@ -64,10 +55,6 @@
 
 h1 {
   margin-bottom: 20px;
-}
-
-h2 {
-  margin-top: 20px;
 }
 
 /* User Card */

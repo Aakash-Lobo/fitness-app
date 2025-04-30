@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import "../Css/UserDashboard.css";
+import Sidebar from "./Sidebar";
 
 const AcceptedTrainers = () => {
   const [trainers, setTrainers] = useState([]);
@@ -18,14 +19,17 @@ const AcceptedTrainers = () => {
   useEffect(() => {
     const fetchAcceptedTrainers = async () => {
       try {
-        const email = sessionStorage.getItem("email") || localStorage.getItem("email");
+        const email =
+          sessionStorage.getItem("email") || localStorage.getItem("email");
         if (!email) {
           setError("User not logged in.");
           setLoading(false);
           return;
         }
 
-        const response = await fetch(`http://localhost:5000/user/acceptedTrainers?email=${email}`);
+        const response = await fetch(
+          `http://localhost:5001/user/acceptedTrainers?email=${email}`
+        );
         if (!response.ok) throw new Error("Failed to fetch trainers.");
 
         const data = await response.json();
@@ -54,10 +58,11 @@ const AcceptedTrainers = () => {
     }
 
     try {
-      const email = sessionStorage.getItem("email") || localStorage.getItem("email");
+      const email =
+        sessionStorage.getItem("email") || localStorage.getItem("email");
 
       const response = await fetch(
-        `http://localhost:5000/user/cancelTrainer/${selectedTrainer._id}?email=${email}`,
+        `http://localhost:5001/user/cancelTrainer/${selectedTrainer._id}?email=${email}`,
         { method: "PUT" }
       );
 
@@ -66,7 +71,9 @@ const AcceptedTrainers = () => {
       // Update local state
       setTrainers((prev) =>
         prev.map((trainer) =>
-          trainer._id === selectedTrainer._id ? { ...trainer, status: "Cancelled" } : trainer
+          trainer._id === selectedTrainer._id
+            ? { ...trainer, status: "Cancelled" }
+            : trainer
         )
       );
 
@@ -90,9 +97,10 @@ const AcceptedTrainers = () => {
   // Confirm booking a session
   const confirmBookSession = async () => {
     try {
-      const email = sessionStorage.getItem("email") || localStorage.getItem("email");
+      const email =
+        sessionStorage.getItem("email") || localStorage.getItem("email");
 
-      const response = await fetch("http://localhost:5000/user/bookSession", {
+      const response = await fetch("http://localhost:5001/user/bookSession", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -110,22 +118,13 @@ const AcceptedTrainers = () => {
       console.error("Error booking session:", error);
     }
   };
-
+  // const [showTrainerSubmenu, setShowTrainerSubmenu] = useState(false);
   return (
     <div className="user-dashboard">
-      {/* Sidebar */}
-      <nav className="sidebar">
-        <h2>User Dashboard</h2>
-        <ul>
-          <li><a href="/Roles/User/UserDashboard">Dashboard</a></li>
-          <li><a href="/Roles/User/SearchTrainers">View Trainers</a></li>
-          <li><a href="/Roles/User/Settings">Settings</a></li>
-        </ul>
-      </nav>
-
+      <Sidebar />
       {/* Main Content */}
       <div className="main-content">
-        <h1>Accepted Trainers</h1>
+        {/* <h1>Accepted Trainers</h1> */}
 
         {loading ? (
           <p>Loading accepted trainers...</p>
@@ -135,15 +134,21 @@ const AcceptedTrainers = () => {
           <p>No accepted trainers yet.</p>
         ) : (
           <div className="accepted-trainers">
-            <h3>Accepted Trainers</h3>
+            <h2>Accepted Trainers</h2>
             <ul>
               {trainers.map((trainer) => (
                 <li key={trainer._id}>
                   {trainer.name} - {trainer.specialization}
-                  <button className="book-btn" onClick={() => handleBookSessionClick(trainer)}>
+                  <button
+                    className="book-btn"
+                    onClick={() => handleBookSessionClick(trainer)}
+                  >
                     Book Session
                   </button>
-                  <button className="delete-btn" onClick={() => handleCancelClick(trainer)}>
+                  <button
+                    className="cancel-btn "
+                    onClick={() => handleCancelClick(trainer)}
+                  >
                     Cancel Subscription
                   </button>
                 </li>
@@ -157,10 +162,20 @@ const AcceptedTrainers = () => {
       {showCancelModal && (
         <div className="modal-overlay">
           <div className="modal-content">
-            <p>Are you sure you want to cancel your subscription with {selectedTrainer?.name}?</p>
+            <p>
+              Are you sure you want to cancel your subscription with{" "}
+              {selectedTrainer?.name}?
+            </p>
             <div className="modal-buttons">
-              <button className="confirm-btn" onClick={confirmCancelTrainer}>Yes, Cancel</button>
-              <button className="cancel-btn" onClick={() => setShowCancelModal(false)}>No</button>
+              <button className="confirm-btn" onClick={confirmCancelTrainer}>
+                Yes, Cancel
+              </button>
+              <button
+                className="cancel-btn"
+                onClick={() => setShowCancelModal(false)}
+              >
+                No
+              </button>
             </div>
           </div>
         </div>
@@ -172,20 +187,42 @@ const AcceptedTrainers = () => {
           <div className="modal-content">
             <h3>Book a Session with {selectedTrainer?.name}</h3>
             <label>Date:</label>
-            <input type="date" name="date" onChange={handleInputChange} required />
+            <input
+              type="date"
+              name="date"
+              onChange={handleInputChange}
+              required
+            />
 
             <label>Time:</label>
-            <input type="time" name="time" onChange={handleInputChange} required />
+            <input
+              type="time"
+              name="time"
+              onChange={handleInputChange}
+              required
+            />
 
             <label>Duration (in minutes):</label>
-            <input type="number" name="duration" onChange={handleInputChange} required />
+            <input
+              type="number"
+              name="duration"
+              onChange={handleInputChange}
+              required
+            />
 
             <label>Notes:</label>
             <textarea name="notes" onChange={handleInputChange} />
 
             <div className="modal-buttons">
-              <button className="confirm-btn" onClick={confirmBookSession}>Confirm Booking</button>
-              <button className="cancel-btn" onClick={() => setShowBookingModal(false)}>Cancel</button>
+              <button className="confirm-btn" onClick={confirmBookSession}>
+                Confirm Booking
+              </button>
+              <button
+                className="cancel-btn"
+                onClick={() => setShowBookingModal(false)}
+              >
+                Cancel
+              </button>
             </div>
           </div>
         </div>

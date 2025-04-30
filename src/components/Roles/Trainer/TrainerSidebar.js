@@ -1,9 +1,26 @@
 import React, { useState } from "react";
-import "./Sidebar.css"; // Ensure you have Sidebar styles
+import { useNavigate } from "react-router-dom";
+import { FiAlignJustify } from "react-icons/fi";
 
-const TrainerSidebar = ({ handleLogout }) => {
+const TrainerSidebar = () => {
   const [showSessionsSubmenu, setShowSessionsSubmenu] = useState(false);
+  const navigate = useNavigate();
+  const handleLogout = async () => {
+    try {
+      const response = await fetch("http://localhost:5001/logout", {
+        method: "POST",
+        credentials: "include",
+      });
 
+      if (response.ok) {
+        sessionStorage.clear();
+        localStorage.clear();
+        navigate("/");
+      }
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+  };
   return (
     <nav className="sidebar">
       <h2>Trainer Dashboard</h2>
@@ -19,7 +36,7 @@ const TrainerSidebar = ({ handleLogout }) => {
         </li>
 
         {/* Training Sessions Dropdown */}
-        <li>
+        {/* <li>
           <button 
             className="sessions-btn" 
             onClick={() => setShowSessionsSubmenu(!showSessionsSubmenu)}
@@ -33,14 +50,35 @@ const TrainerSidebar = ({ handleLogout }) => {
               <li><a href="/Roles/Trainer/TrainerProgress">Progress</a></li>
             </ul>
           )}
+        </li> */}
+        <li
+          onMouseEnter={() => setShowSessionsSubmenu(true)}
+          onMouseLeave={() => setShowSessionsSubmenu(false)}
+          className="sessions-container"
+        >
+          <button className="sessions-btn">
+            Training Sessions <FiAlignJustify size={16} />
+          </button>
+
+          {showSessionsSubmenu && (
+            <ul className="submenu">
+              <li>
+                <a href="/Roles/Trainer/TrainerUpcomingSessions">Upcoming</a>
+              </li>
+              <li>
+                <a href="/Roles/Trainer/TrainerSessionHistory">History</a>
+              </li>
+              <li>
+                <a href="/Roles/Trainer/TrainerProgress">Progress</a>
+              </li>
+            </ul>
+          )}
         </li>
 
         <li>
-          <a href="/Roles/Trainer/Settings">Settings</a>
-        </li>
-
-        <li>
-          <button onClick={handleLogout} className="logout-btn">Logout</button>
+          <button onClick={handleLogout} className="logout-btn">
+            Logout
+          </button>
         </li>
       </ul>
     </nav>

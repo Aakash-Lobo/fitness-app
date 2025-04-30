@@ -1,30 +1,41 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import "./Roles/Css/Register.css";
+import fitnessVideo from "../assets/fitness.mp4";
+import { FcGoogle } from "react-icons/fc";
+import { FaFacebook } from "react-icons/fa6";
 
 const Register = () => {
   const [user, setUser] = useState(null);
-  const [formData, setFormData] = useState({ name: "", email: "", password: "" });
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
   const [status, setStatus] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://localhost:5000/auth/user", { credentials: "include" })
+    if (window.location.pathname !== "/register") return;
+    fetch("http://localhost:5001/auth/user", { credentials: "include" })
       .then((res) => res.json())
       .then((data) => {
         setUser(data);
         if (data?.status) setStatus(data.status);
         if (data?.role === "admin") navigate("./Roles/Admin/AdminDashboard");
-        else if (data?.role === "trainer") navigate("./Roles/Trainer/TrainerDashboard");
-        else if (data?.role === "user" && data?.status === "approved") navigate("./Roles/User/UserDashboard");
+        else if (data?.role === "trainer")
+          navigate("./Roles/Trainer/TrainerDashboard");
+        else if (data?.role === "user" && data?.status === "approved")
+          navigate("./Roles/User/UserDashboard");
       });
   }, [navigate]);
 
   const handleGoogleLogin = () => {
-    window.open("http://localhost:5000/auth/google", "_self");
+    window.open("http://localhost:5001/auth/google", "_self");
   };
 
   const handleLogout = () => {
-    window.open("http://localhost:5000/auth/logout", "_self");
+    window.open("http://localhost:5001/auth/logout", "_self");
   };
 
   const handleChange = (e) => {
@@ -33,7 +44,7 @@ const Register = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    const response = await fetch("http://localhost:5000/register", {
+    const response = await fetch("http://localhost:5001/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),
@@ -48,31 +59,44 @@ const Register = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 shadow-md rounded-lg">
-        <h1 className="text-2xl font-semibold mb-8">Register / Login</h1>
+    <div className="register-container">
+      <div className="reg-video">
+        <video autoPlay muted loop playsInline>
+          <source src={fitnessVideo} type="video/mp4" />
+          Your browser does not support the video tag.
+        </video>
+      </div>
+      <div className="register-title">
+        <h1>Join FitZone Today</h1>
+        <p>
+          Sign up to unlock fitness tracking, expert trainers, and personalized
+          programs.
+        </p>
 
         {user ? (
-          <div className="text-center">
-            <img src={user.avatar} alt={user.name} className="w-16 h-16 rounded-full mx-auto mb-2" />
+          <div className="user-info">
+            <img src={user.avatar} alt={user.name} className="user-avatar" />
             <p>Welcome, {user.name}!</p>
-            {status === "pending" && <p className="text-yellow-500">Your account is pending approval.</p>}
-            {status === "declined" && <p className="text-red-500">Your registration was declined.</p>}
-            <button
-              onClick={handleLogout}
-              className="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
-            >
+            {status === "pending" && (
+              <p className="status-pending">
+                Your account is pending approval.
+              </p>
+            )}
+            {status === "declined" && (
+              <p className="status-declined">Your registration was declined.</p>
+            )}
+            <button onClick={handleLogout} className="logout-btn">
               Logout
             </button>
           </div>
         ) : (
           <>
-            <form onSubmit={handleRegister} className="mb-4">
+            <form onSubmit={handleRegister} className="register-form">
               <input
                 type="text"
                 name="name"
                 placeholder="Full Name"
-                className="block w-full p-2 mb-2 border rounded"
+                className="input-field"
                 value={formData.name}
                 onChange={handleChange}
                 required
@@ -81,7 +105,7 @@ const Register = () => {
                 type="email"
                 name="email"
                 placeholder="Email"
-                className="block w-full p-2 mb-2 border rounded"
+                className="input-field"
                 value={formData.email}
                 onChange={handleChange}
                 required
@@ -90,27 +114,37 @@ const Register = () => {
                 type="password"
                 name="password"
                 placeholder="Password"
-                className="block w-full p-2 mb-2 border rounded"
+                className="input-field"
                 value={formData.password}
                 onChange={handleChange}
                 required
               />
-              <button
-                type="submit"
-                className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 w-full"
-              >
+              <button type="submit" className="register-btn">
                 Register
               </button>
             </form>
 
-            <p className="text-center mb-2">OR</p>
+            <div className="divider">
+            <p className="or-divider">Or Continue With</p>
+            </div>
 
-            <button
-              onClick={handleGoogleLogin}
-              className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full"
-            >
-              Sign in with Google
-            </button>
+            <div className="social-login-container">
+              <div className="social-login-option" onClick={handleGoogleLogin}>
+                <FcGoogle className="social-icon" />
+                <span>Login with Google</span>
+              </div>
+
+              <div className="social-login-option">
+                <FaFacebook className="social-icon facebook-icon" />
+                <span>Login with Facebook</span>
+              </div>
+            </div>
+
+            <p className="back-home-text">
+              <a href="/" className="back-home-link">
+                Back to HomePage
+              </a>
+            </p>
           </>
         )}
       </div>
