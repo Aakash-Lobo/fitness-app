@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useCallback } from "react";
 import "../Css/UserDashboard.css";
+import TrainerSidebar from "./TrainerSidebar"; 
 
 const TrainerBookings = () => {
   const [bookings, setBookings] = useState([]);
   const [users, setUsers] = useState([]);
-  const [notifications, setNotifications] = useState([]); // NEW: Notifications State
+  //const [notifications, setNotifications] = useState([]); // NEW: Notifications State
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [showBookingModal, setShowBookingModal] = useState(false);
@@ -28,7 +29,7 @@ const TrainerBookings = () => {
 
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:5000/trainer/bookings?trainerId=${trainerId}`);
+      const response = await fetch(`http://localhost:5001/trainer/bookings?trainerId=${trainerId}`);
       if (!response.ok) throw new Error("Failed to fetch bookings");
 
       const data = await response.json();
@@ -43,7 +44,7 @@ const TrainerBookings = () => {
   // Fetch users
   const fetchUsers = async () => {
     try {
-      const response = await fetch("http://localhost:5000/trainer/users");
+      const response = await fetch("http://localhost:5001/trainer/users");
       if (!response.ok) throw new Error("Failed to fetch users");
 
       const data = await response.json();
@@ -64,7 +65,7 @@ const TrainerBookings = () => {
   // Cancel booking
   const cancelBooking = async (bookingId) => {
     try {
-      const response = await fetch("http://localhost:5000/trainer/cancel-booking", {
+      const response = await fetch("http://localhost:5001/trainer/cancel-booking", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ bookingId }),
@@ -93,7 +94,7 @@ const TrainerBookings = () => {
     console.log("Sending request data:", requestData); // Log data being sent
   
     try {
-      const response = await fetch("http://localhost:5000/trainer/bookSession", {
+      const response = await fetch("http://localhost:5001/trainer/bookSession", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(requestData),
@@ -117,14 +118,9 @@ const TrainerBookings = () => {
   
 
   return (
-    <div className="user-dashboard">
-      <nav className="sidebar">
-        <h2>Trainer Dashboard</h2>
-        <ul>
-          <li><a href="/Roles/Trainer/TrainerDashboard">Dashboard</a></li>
-          <li><a href="/Roles/Trainer/Bookings">Bookings</a></li>
-        </ul>
-      </nav>
+    /* Sidebar */
+    <div className="trainer-dashboard">
+      <TrainerSidebar />
 
       <div className="main-content">
         <h1>My Bookings</h1>

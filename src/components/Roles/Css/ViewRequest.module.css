@@ -1,0 +1,142 @@
+.mainContent {
+    padding: 100px 40px;
+    background-color: #f5f9fc;
+    min-height: 100vh;
+border-radius: 10px;
+  }
+  
+  .requestsTable {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #ffffff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+  
+  .requestsTable th, .requestsTable td {
+    padding: 16px;
+    text-align: center;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .requestsTable th {
+    background-color: #e3edf7;
+    font-weight: 600;
+    color: #374151;
+  }
+  
+  .requestsTable tr:last-child td {
+    border-bottom: none;
+  }
+  
+  .button {
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.2s ease;
+  }
+  
+  .button:hover {
+    background-color: #2563eb;
+  }
+  
+  /* Modal related */
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  .modalContent {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 16px;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  .cancelBtn {
+    background-color: #ef4444;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    border: none;
+    color: white;
+    margin-left: 380px;
+  }
+  
+  .cancelBtn:hover {
+    background-color: #dc2626;
+  }
+
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  .modalContent {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 16px;
+    width: 450px;
+    max-width: 90%;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  }
+  
+  .modalContent p {
+    margin-bottom: 12px;
+  }
+  
+  .modalActions {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+  }
+  
+  .modalActions button {
+    flex: 1;
+    margin-right: 10px;
+  }
+  
+  .modalActions button:last-child {
+    margin-right: 0;
+  }
+  
+  .suggestTrainerSection {
+    margin-top: 30px;
+  }
+  
+  .suggestTrainerControls {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+  }
+  
+  .selectTrainer {
+    flex: 1;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+  }

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "./TrainerSidebar";
 import "../Css/TrainerDashboard.css";
+import styles from "../Css/TrainerProgress.module.css";
 
 const TrainerProgress = () => {
   const [progress, setProgress] = useState([]);
@@ -31,7 +32,8 @@ useEffect(() => {
 
       setLoading(true);
       const response = await fetch(
-        `http://localhost:5000/trainer/progress?trainerId=${trainerId}&user=${userFilter}`
+        // `http://localhost:5001/trainer/progress?trainerId=${trainerId}&user=${userFilter}`
+        `http://localhost:5001/trainer/progress?trainerId=${trainerId}&user=${userFilter}`
       );
       if (!response.ok) throw new Error("Failed to fetch progress data.");
 
@@ -53,11 +55,9 @@ useEffect(() => {
     <div className="user-dashboard">
       <Sidebar />
 
-      <div className="main-content">
-        <h1>Trainer Progress Overview</h1>
+      <div className={styles.mainContent}>
 
-        {/* User Selection Dropdown */}
-        <div className="filter-container">
+   <div className={styles.filterContainer}>
   <label htmlFor="userFilter">View Progress For:</label>
   <select id="userFilter" value={userFilter} onChange={(e) => setUserFilter(e.target.value)}>
     <option value="all">All Users</option>
@@ -69,72 +69,62 @@ useEffect(() => {
   </select>
 </div>
 
+{loading && <p>Loading progress data...</p>}
+{error && <p className="error">{error}</p>}
 
-        {loading ? (
-          <p>Loading progress data...</p>
-        ) : error ? (
-          <p className="error">{error}</p>
-        ) : (
-          <>
-            {/* Visits This Week */}
-            <div className="section">
-              <h2>Number of Visits This Week</h2>
-              <div className="stat-box">
-                <h3>{stats.visitsThisWeek}</h3>
-                <p>Visits</p>
-              </div>
-            </div>
+<div className={styles.section}>
+  <h2>Number of Visits This Week</h2>
+  <div className={styles.statBox}>
+    <h3>{stats.visitsThisWeek}</h3>
+    <p>Visits</p>
+  </div>
+</div>
 
-            {/* Visits: Previous Month vs This Month */}
-            <div className="section">
-              <h2>Visits: Previous Month vs This Month</h2>
-              <div className="comparison-container">
-                <div className="stat-box">
-                  <h3>{stats.visitsPrevMonth}</h3>
-                  <p>Last Month</p>
-                </div>
-                <div className="stat-box">
-                  <h3>{stats.visitsThisMonth}</h3>
-                  <p>This Month</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Duration: Previous Month vs This Month */}
-            <div className="section">
-              <h2>Exercise Duration: Previous Month vs This Month</h2>
-              <div className="comparison-container">
-                <div className="stat-box">
-                  <h3>{stats.durationPrevMonth} mins</h3>
-                  <p>Last Month</p>
-                </div>
-                <div className="stat-box">
-                  <h3>{stats.durationThisMonth} mins</h3>
-                  <p>This Month</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Yearly Data */}
-            <div className="section">
-              <h2>Yearly Summary</h2>
-              <div className="comparison-container">
-                {Array.isArray(stats.yearlySessions) && stats.yearlySessions.length > 0 ? (
-                  stats.yearlySessions.map((session) => (
-                    <div key={session._id} className="stat-box">
-                      <h3>{session.count}</h3>
-                      <p>Sessions in Month {session._id}</p>
-                    </div>
-                  ))
-                ) : (
-                  <p>No sessions recorded this year.</p>
-                )}
-              </div>
-            </div>
-          </>
-        )}
-      </div>
+<div className={styles.section}>
+  <h2>Visits: Previous Month vs This Month</h2>
+  <div className={styles.comparisonContainer}>
+    <div className={styles.statBox}>
+      <h3>{stats.visitsPrevMonth}</h3>
+      <p>Last Month</p>
     </div>
+    <div className={styles.statBox}>
+      <h3>{stats.visitsThisMonth}</h3>
+      <p>This Month</p>
+    </div>
+  </div>
+</div>
+
+<div className={styles.section}>
+  <h2>Exercise Duration: Previous Month vs This Month</h2>
+  <div className={styles.comparisonContainer}>
+    <div className={styles.statBox}>
+      <h3>{stats.durationPrevMonth} mins</h3>
+      <p>Last Month</p>
+    </div>
+    <div className={styles.statBox}>
+      <h3>{stats.durationThisMonth} mins</h3>
+      <p>This Month</p>
+    </div>
+  </div>
+</div>
+
+<div className={styles.section}>
+  <h2>Yearly Summary</h2>
+  <div className={styles.yearlySummary}>
+    {Array.isArray(stats.yearlySessions) && stats.yearlySessions.length > 0 ? (
+      stats.yearlySessions.map((session) => (
+        <div key={session._id} className={styles.statBox}>
+          <h3>{session.count}</h3>
+          <p>Sessions in Month {session._id}</p>
+        </div>
+      ))
+    ) : (
+      <p>No sessions recorded this year.</p>
+    )}
+  </div>
+</div>
+</div>
+</div>
   );
 };
 

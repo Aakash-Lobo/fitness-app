@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
-import "../Css/UserDashboard.css";
+import styles from "../Css/UserProgress.module.css";
+
 
 const UserProgress = () => {
   const [progress, setProgress] = useState([]);
+  
   const [stats, setStats] = useState({
     visitsThisWeek: 0,
     visitsPrevMonth: 0,
@@ -25,7 +27,7 @@ const UserProgress = () => {
           return;
         }
 
-        const response = await fetch(`http://localhost:5000/user/progress?email=${userEmail}`);
+        const response = await fetch(`http://localhost:5001/user/progress?email=${userEmail}`);
         if (!response.ok) throw new Error("Failed to fetch progress data.");
 
         const data = await response.json();
@@ -46,6 +48,7 @@ const UserProgress = () => {
       <Sidebar />
 
       <div className="main-content">
+      <div className={styles.container}>
         <h1>Progress Overview</h1>
 
         {loading ? (
@@ -55,23 +58,23 @@ const UserProgress = () => {
         ) : (
           <>
             {/* Visits This Week */}
-            <div className="section">
+            <div className={styles.section}>
               <h2>Number of Visits This Week</h2>
-              <div className="stat-box">
+              <div className={styles.statBox}>
                 <h3>{stats.visitsThisWeek}</h3>
                 <p>Visits</p>
               </div>
             </div>
 
             {/* Visits: Previous Month vs This Month */}
-            <div className="section">
+            <div className={styles.section}>
               <h2>Visits: Previous Month vs This Month</h2>
-              <div className="comparison-container">
-                <div className="stat-box">
+              <div className={styles.comparisonContainer}>
+              <div className={styles.statBox}>
                   <h3>{stats.visitsPrevMonth}</h3>
                   <p>Last Month</p>
                 </div>
-                <div className="stat-box">
+                <div className={styles.statBox}>
                   <h3>{stats.visitsThisMonth}</h3>
                   <p>This Month</p>
                 </div>
@@ -94,12 +97,12 @@ const UserProgress = () => {
             </div>
 
             {/* Yearly Data */}
-            <div className="section">
+            <div className={styles.section}>
               <h2>Yearly Summary</h2>
-              <div className="comparison-container">
+              <div className={styles.comparisonContainer}>
                 {stats.yearlySessions.length > 0 ? (
                   stats.yearlySessions.map((session) => (
-                    <div key={session._id} className="stat-box">
+                    <div key={session._id} className={styles.statBox}>
                       <h3>{session.count}</h3>
                       <p>Sessions in Month {session._id}</p>
                     </div>
@@ -112,6 +115,7 @@ const UserProgress = () => {
           </>
         )}
       </div>
+    </div>
     </div>
   );
 };

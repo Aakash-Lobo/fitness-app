@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "./TrainerSidebar";
 import "../Css/TrainerDashboard.css";
+import styles from "../Css/TrainerSessionHistory.module.css";
 
 const TrainerSessionHistory = () => {
   const [sessions, setSessions] = useState([]);
@@ -23,7 +24,7 @@ const TrainerSessionHistory = () => {
           return;
         }
 
-        const response = await fetch(`http://localhost:5000/trainer/completedSessions?trainerId=${trainerId}`);
+        const response = await fetch(`http://localhost:5001/trainer/completedSessions?trainerId=${trainerId}`);
         if (!response.ok) {
           const errorData = await response.json();
           throw new Error(errorData.error || "Failed to fetch completed sessions.");
@@ -80,7 +81,7 @@ const TrainerSessionHistory = () => {
   // Handle Update Request
   const handleUpdate = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/trainer/update-session/${selectedSession._id}`, {
+      const response = await fetch(`http://localhost:5001/trainer/update-session/${selectedSession._id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updatedSession),
@@ -99,11 +100,11 @@ const TrainerSessionHistory = () => {
   return (
     <div className="user-dashboard">
       <Sidebar />
-      <div className="main-content">
+      <div className={styles.mainContent}>
         <h1>Session History</h1>
 
         {/* Search Filters */}
-        <div className="filters">
+        <div className={styles.filters}>
           <input
             type="text"
             placeholder="Search by User"
@@ -124,9 +125,8 @@ const TrainerSessionHistory = () => {
         ) : filteredSessions.length === 0 ? (
           <p>No completed sessions found.</p>
         ) : (
-          <div className="sessions-list">
-            <div className="table-wrapper">
-              <table className="sessions-table">
+          <div className={styles.tableWrapper}>
+            <table className={styles.sessionsTable}>
                 <thead>
                   <tr>
                     <th>User</th>
@@ -146,13 +146,12 @@ const TrainerSessionHistory = () => {
                       <td>{session.duration} mins</td>
                       <td>{session.notes || "No notes"}</td>
                       <td>
-                        <button onClick={() => openModal(session)} className="edit-btn">Edit</button>
+                        <button onClick={() => openModal(session)} className={styles.editBtn}>Edit</button>
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
-            </div>
           </div>
         )}
       </div>
@@ -182,8 +181,10 @@ const TrainerSessionHistory = () => {
                 <option value="Cancelled">Cancelled</option>
               </select>
             </label>
-            <button onClick={handleUpdate} className="save-btn">Save</button>
-            <button onClick={closeModal} className="close-btn">Close</button>
+            <div className={styles.buttonGroup}>
+            <button onClick={handleUpdate} className={styles.saveBtn}>Save</button>
+            <button onClick={closeModal} className={styles.closeBtn}>Close</button>
+            </div>
           </div>
         </div>
       )}

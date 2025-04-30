@@ -1,0 +1,177 @@
+.mainContent {
+    padding: 100px 40px;
+    background-color: #f5f9fc;
+    min-height: 100vh;
+  }
+  
+  /* 搜索区 */
+  .filters {
+    margin: 20px 0;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  
+  .filters input[type="text"],
+  .filters input[type="date"] {
+    padding: 8px 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 14px;
+  }
+  
+  /* 表格整体包装 */
+  .tableWrapper {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+  }
+  
+  /* 表格 */
+  .sessionsTable {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .sessionsTable th,
+  .sessionsTable td {
+    padding: 16px;
+    text-align: center;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  
+  .sessionsTable th {
+    background-color: #e3edf7;
+    font-weight: 600;
+    color: #374151;
+  }
+  
+  .sessionsTable tr:last-child td {
+    border-bottom: none;
+  }
+  
+  /* Edit 按钮 */
+  .editBtn {
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .editBtn:hover {
+    background-color: #2563eb;
+  }
+  
+  /* Modal 遮罩 */
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+  }
+  
+  /* Modal 内容卡片 */
+  .modalContent {
+    background: #ffffff;
+    padding: 30px;
+    border-radius: 20px;
+    width: 400px;
+    max-width: 90%;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    animation: fadeIn 0.3s ease;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .modalContent h2 {
+    margin-bottom: 20px;
+  }
+  
+  /* Modal 表单 */
+  .modalContent label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    font-size: 14px;
+  }
+  
+  .modalContent input,
+  .modalContent textarea,
+  .modalContent select {
+    width: 100%;
+    padding: 10px 14px;
+    margin-bottom: 15px;
+    border: 1px solid #d1d5db;
+    border-radius: 10px;
+    font-size: 14px;
+    transition: border-color 0.2s;
+  }
+  
+  .modalContent input:focus,
+  .modalContent textarea:focus,
+  .modalContent select:focus {
+    outline: none;
+    border-color: #3b82f6;
+  }
+  
+  /* Modal按钮区 */
+  .buttonGroup {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 20px;
+  }
+  
+  /* Save按钮 */
+  .saveBtn {
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .saveBtn:hover {
+    background-color: #2563eb;
+  }
+  
+  /* Close按钮 */
+  .closeBtn {
+    background-color: #9ca3af;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 15px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .closeBtn:hover {
+    background-color: #6b7280;
+  }

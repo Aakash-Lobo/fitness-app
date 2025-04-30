@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "../Css/AdminDashboard.css";
+import Sidebar from "./AdminSidebar";
 
 const AdminDashboard = () => {
   const [users, setUsers] = useState([]);
@@ -15,7 +16,7 @@ const AdminDashboard = () => {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:5000/admin/users", {
+      const response = await fetch("http://localhost:5001/admin/users", {
         credentials: "include",
       });
 
@@ -33,7 +34,7 @@ const AdminDashboard = () => {
   const updateUserStatus = async (userId, status) => {
     console.log("Updating user ID:", userId); // Debugging
     try {
-      const response = await fetch(`http://localhost:5000/admin/update-status/${userId}`, {
+      const response = await fetch(`http://localhost:5001/admin/update-status/${userId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status }),
@@ -55,14 +56,14 @@ const AdminDashboard = () => {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch("http://localhost:5000/logout", {
+      const response = await fetch("http://localhost:5001/logout", {
         method: "POST",
         credentials: "include",
       });
 
       if (response.ok) {
         sessionStorage.clear();
-        navigate("../../Register");
+        navigate("/");
       }
     } catch (error) {
       console.error("Error logging out:", error);
@@ -71,14 +72,14 @@ const AdminDashboard = () => {
 
   return (
     <div className="admin-container">
-      {/* Sidebar */}
+      <Sidebar />
       <nav className="sidebar">
         <h2>Admin Panel</h2>
         <ul>
           <li><a href="/Roles/Admin/AdminDashboard">Dashboard</a></li>
           <li><a href="../Admin/ManageUsers">Manage Users</a></li>
           <li><a href="../Admin/ViewTrainers">Manage Trainers</a></li>
-          <li><a href="./ManageGym">Gym</a></li>
+          <li><a href="./ManageGym">Manage Gyms</a></li>
           <li><button onClick={handleLogout} className="logout-btn">Logout</button></li>
         </ul>
       </nav>
@@ -86,7 +87,6 @@ const AdminDashboard = () => {
       {/* Main Content */}
       <div className="main-content">
         <h1>Admin Dashboard</h1>
-
         {loading ? (
           <p>Loading users...</p>
         ) : error ? (
@@ -119,6 +119,7 @@ const AdminDashboard = () => {
           </>
         )}
       </div>
+  
     </div>
   );
 };

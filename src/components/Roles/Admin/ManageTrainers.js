@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 import "../Css/AdminDashboard.css";
+import Sidebar from "./AdminSidebar";
+import styles from "../Css/ManageUsers.module.css";
 
 const ManageTrainers = () => {
   const [trainers, setTrainers] = useState([]);
@@ -8,7 +10,9 @@ const ManageTrainers = () => {
   const [error, setError] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [newTrainer, setNewTrainer] = useState({ name: "", email: "", password: "" });
-  const navigate = useNavigate();
+  const [isEditPopupOpen, setIsEditPopupOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+  // const navigate = useNavigate();
 
   useEffect(() => {
     fetchTrainers();
@@ -17,7 +21,7 @@ const ManageTrainers = () => {
   const fetchTrainers = async () => {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:5000/admin/trainers", {
+      const response = await fetch("http://localhost:5001/admin/trainers", {
         credentials: "include",
       });
 
@@ -32,15 +36,44 @@ const ManageTrainers = () => {
     }
   };
 
-  const handleEdit = (trainer) => {
-    navigate("/Roles/Admin/EditTrainer", { state: { trainer } });
+  // const handleEdit = (trainer) => {
+  //   navigate("/Roles/Admin/EditTrainer", { state: { trainer } });
+  // };
+
+  const openEditPopup = (trainer) => {
+    setSelectedUser(trainer);
+    setIsEditPopupOpen(true);
+  };
+
+  const closeEditPopup = () => {
+    setSelectedUser(null);
+    setIsEditPopupOpen(false);
+  };
+
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      const response = await fetch(`http://localhost:5001/admin/trainers/${selectedUser._id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(selectedUser),
+      });
+
+      if (!response.ok) throw new Error("Failed to update user");
+
+      fetchTrainers();
+      closeEditPopup();
+    } catch (error) {
+      console.error("Error updating user:", error.message);
+    }
   };
 
   const handleDelete = async (trainerId) => {
     if (!window.confirm("Are you sure you want to delete this trainer?")) return;
   
     try {
-      const response = await fetch(`http://localhost:5000/admin/trainers/${trainerId}`, {
+      const response = await fetch(`http://localhost:5001/admin/trainers/${trainerId}`, {
         method: "DELETE",
         credentials: "include",
       });
@@ -58,7 +91,7 @@ const ManageTrainers = () => {
 
   const handleAddTrainer = async () => {
     try {
-      const response = await fetch("http://localhost:5000/admin/trainers", {
+      const response = await fetch("http://localhost:5001/admin/trainers", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -78,23 +111,13 @@ const ManageTrainers = () => {
 
   return (
     <div className="admin-container">
-      {/* Sidebar */}
-      <nav className="sidebar">
-        <h2>Admin Panel</h2>
-        <ul>
-          <li><a href="/Roles/Admin/AdminDashboard">Dashboard</a></li>
-          <li><a href="/Roles/Admin/ManageUsers">Manage Users</a></li>
-          <li><a href="/Roles/Admin/ViewTrainers">Manage Trainers</a></li>
-          <li><a href="/Roles/Admin/Settings">Settings</a></li>
-          <li><button className="logout-btn" onClick={() => navigate("/Register")}>Logout</button></li>
-        </ul>
-      </nav>
+      <Sidebar />
 
       {/* Main Content */}
-      <div className="main-content">
-        <div className="header">
+      <div className={styles.mainContent}>
+              <div className={styles.header}>
           <h1>Manage Trainers</h1>
-          <button className="add-btn" onClick={() => setShowPopup(true)}>Add Trainer</button>
+          <button className={styles.addbtn} onClick={() => setShowPopup(true)}>Add Trainer</button>
         </div>
         
         {loading ? (
@@ -104,7 +127,7 @@ const ManageTrainers = () => {
         ) : trainers.length === 0 ? (
           <p>No trainers found.</p>
         ) : (
-          <table className="trainer-table">
+          <table className={styles.userTable}>
             <thead>
               <tr>
                 <th>Name</th>
@@ -120,8 +143,8 @@ const ManageTrainers = () => {
                   <td>{trainer.email}</td>
                   <td>{trainer.status}</td>
                   <td>
-                    <button className="edit-btn" onClick={() => handleEdit(trainer)}>Edit</button>
-                    <button className="delete-btn" onClick={() => handleDelete(trainer._id)}>Delete</button>
+                    <button className={styles.editBtn} onClick={() => openEditPopup(trainer)}>Edit</button>
+                    <button className={styles.deleteBtn} onClick={() => handleDelete(trainer._id)}>Delete</button>
                   </td>
                 </tr>
               ))}
@@ -131,8 +154,8 @@ const ManageTrainers = () => {
       </div>
 
       {showPopup && (
-        <div className="popup">
-          <div className="popup-content">
+        <div className={styles.popupOverlay}>
+            <div className={styles.popupContent}>
             <h2>Add Trainer</h2>
             <label>Name:</label>
             <input type="text" value={newTrainer.name} onChange={(e) => setNewTrainer({ ...newTrainer, name: e.target.value })} />
@@ -140,12 +163,43 @@ const ManageTrainers = () => {
             <input type="email" value={newTrainer.email} onChange={(e) => setNewTrainer({ ...newTrainer, email: e.target.value })} />
             <label>Password:</label>
             <input type="password" value={newTrainer.password} onChange={(e) => setNewTrainer({ ...newTrainer, password: e.target.value })} />
-            <button onClick={handleAddTrainer}>Add</button>
-            <button onClick={() => setShowPopup(false)}>Cancel</button>
+            <div className={styles.popupButtons}>
+            <button className={styles.saveBtn} onClick={handleAddTrainer}>Add</button>
+            <button className={styles.cancelBtn} onClick={() => setShowPopup(false)}>Cancel</button>
+            </div>
           </div>
         </div>
       )}
-    </div>
+
+      {/* Edit Popup */}
+            {isEditPopupOpen && selectedUser && (
+              <div className={styles.popupOverlay}>
+                <div className={styles.popupContent}>
+                  <h2>Edit Trainer</h2>
+                  <form onSubmit={handleEditSubmit}>
+                    <label>Name:</label>
+                    <input
+                      type="text"
+                      value={selectedUser.name}
+                      onChange={(e) => setSelectedUser({ ...selectedUser, name: e.target.value })}
+                      required
+                    />
+                    <label>Email:</label>
+                    <input
+                      type="email"
+                      value={selectedUser.email}
+                      onChange={(e) => setSelectedUser({ ...selectedUser, email: e.target.value })}
+                      required
+                    />
+                    <div className={styles.popupButtons}>
+                      <button type="submit" className={styles.saveBtn}>Save</button>
+                      <button type="button" className={styles.cancelBtn} onClick={closeEditPopup}>Cancel</button>
+                    </div>
+                    </form>
+               </div>
+             </div>
+             )}
+             </div>
   );
 };
 

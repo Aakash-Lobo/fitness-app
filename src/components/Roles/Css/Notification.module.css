@@ -1,0 +1,42 @@
+.container {
+    background-color: white;
+    padding: 30px;
+    margin-top: 80px;
+    z-index: 1;
+    position: relative;
+    border-radius: 16px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .list {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+  }
+
+  .item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #eef5fb;
+    border: 1px solid #d1e3f0;
+    border-radius: 12px;
+    padding: 12px 20px;
+    margin-bottom: 12px;
+  }
+  
+  .btn {
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    padding: 6px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .btn:hover {
+    background-color: #43a047;
+  }

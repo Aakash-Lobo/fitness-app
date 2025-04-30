@@ -78,7 +78,7 @@ router.get("/acceptedTrainers", async (req, res) => {
     if (!email) return res.status(400).json({ message: "Email is required" });
 
     // Find all approved bookings for this user
-    const approvedBookings = await Booking.find({ userEmail: email, status: "approved" });
+    const approvedBookings = await Booking.find({ userEmail: email, status: "accepted" });
 
     if (approvedBookings.length === 0) {
       return res.json([]); // No accepted trainers

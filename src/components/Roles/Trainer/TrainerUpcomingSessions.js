@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "./TrainerSidebar";
 import "../Css/TrainerDashboard.css";
+import styles from "../Css/TrainerSessions.module.css";
 
 const TrainerUpcomingSessions = () => {
   const [sessions, setSessions] = useState([]);
@@ -21,7 +22,7 @@ const TrainerUpcomingSessions = () => {
           return;
         }
 
-        const response = await fetch(`http://localhost:5000/trainer/scheduledSessions?email=${email}`);
+        const response = await fetch(`http://localhost:5001/trainer/scheduledSessions?email=${email}`);
         if (!response.ok) throw new Error("Failed to fetch sessions.");
 
         const data = await response.json();
@@ -69,7 +70,7 @@ const TrainerUpcomingSessions = () => {
   // Update Session
   const handleUpdate = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/trainer/update-session/${selectedSession._id}`, {
+      const response = await fetch(`http://localhost:5001/trainer/update-session/${selectedSession._id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updatedSession),
@@ -88,7 +89,7 @@ const TrainerUpcomingSessions = () => {
   // Cancel (Delete) Session
   const cancelSession = async () => {
     try {
-      const response = await fetch(`http://localhost:5000/trainer/cancelSession/${selectedSession._id}`, {
+      const response = await fetch(`http://localhost:5001/trainer/cancelSession/${selectedSession._id}`, {
         method: "DELETE",
       });
 
@@ -105,7 +106,8 @@ const TrainerUpcomingSessions = () => {
     <div className="user-dashboard">
       <Sidebar />
 
-      <div className="main-content">
+      {/* <div className="main-content"> */}
+      <div className={styles.mainContent}>
         <h1>Scheduled Sessions</h1>
 
         {loading ? (
@@ -116,7 +118,7 @@ const TrainerUpcomingSessions = () => {
           <p>No scheduled sessions found.</p>
         ) : (
           <div className="sessions-list">
-            <table className="sessions-table">
+            <table className={styles.sessionsTable}>
               <thead>
                 <tr>
                   <th>User</th>
@@ -138,8 +140,8 @@ const TrainerUpcomingSessions = () => {
                     <td>{session.notes || "No notes"}</td>
                     <td className={`status-${session.status.toLowerCase()}`}>{session.status}</td>
                     <td>
-                      <button onClick={() => openEditModal(session)} className="edit-btn">Edit</button>
-                      <button onClick={() => openConfirmModal(session)} className="cancel-btn">Cancel</button>
+                      <button onClick={() => openEditModal(session)} className={styles.editBtn}>Edit</button>
+                      <button onClick={() => openConfirmModal(session)} className={styles.cancelBtn}>Cancel</button>
                     </td>
                   </tr>
                 ))}
@@ -147,12 +149,13 @@ const TrainerUpcomingSessions = () => {
             </table>
           </div>
         )}
+      
       </div>
 
       {/* Edit Session Modal */}
       {isModalOpen && selectedSession && (
-        <div className="modal">
-          <div className="modal-content">
+       <div className={styles.modal}>
+  <div className={styles.modalContent}>
             <h2>Edit Session</h2>
             <label>
               Time:
@@ -174,20 +177,24 @@ const TrainerUpcomingSessions = () => {
                 <option value="Cancelled">Cancelled</option>
               </select>
             </label>
-            <button onClick={handleUpdate} className="save-btn">Save</button>
-            <button onClick={closeEditModal} className="close-btn">Close</button>
+            <div className={styles.buttonGroup}>
+            <button onClick={handleUpdate} className={styles.saveBtn}>Save</button>
+            <button onClick={closeEditModal} className={styles.closeBtn}>Close</button>
+            </div>
           </div>
         </div>
       )}
 
       {/* Confirm Cancel Modal */}
       {isConfirmOpen && selectedSession && (
-        <div className="modal">
-          <div className="modal-content">
+        <div className={styles.modal}>
+  <div className={styles.modalContent}>
             <h2>Confirm Cancellation</h2>
             <p>Are you sure you want to cancel this session with {selectedSession.userName}?</p>
-            <button onClick={cancelSession} className="confirm-btn">Yes, Cancel</button>
-            <button onClick={closeConfirmModal} className="close-btn">No, Keep</button>
+            <div className={styles.buttonGroup}>
+            <button onClick={cancelSession} className={styles.confirmBtn}>Yes, Cancel</button>
+            <button onClick={closeConfirmModal} className={styles.closeBtn}>No, Keep</button>
+            </div>
           </div>
         </div>
       )}

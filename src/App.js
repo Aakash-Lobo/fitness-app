@@ -1,5 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes, Link, useLocation } from "react-router-dom";
+import HomePage from "./components/home";
 import Register from "./components/Register";
 import Login from "./components/Login";
 import AdminDashboard from "./components/Roles/Admin/AdminDashboard";
@@ -22,29 +23,31 @@ import TrainerProgress from "./components/Roles/Trainer/TrainerProgress";
 import UserNotifications from "./components/Roles/User/UserNotification";
 import VerifyEmail from "./components/VerifyEmail";
 
-const Navigation = () => {
-  const location = useLocation();
+// const Navigation = () => {
+//   const location = useLocation();
 
-  // Show navigation only on the home page
-  if (location.pathname !== "/") return null;
+//   // Show navigation only on the home page
+//   if (location.pathname !== "/") return null;
 
-  return (
-    <div>
-      <h1>Welcome to the Fitness App</h1>
-      <nav>
-        <Link to="/register">Go to Registration</Link>
-        <Link to="/login">Go to Login</Link>
-      </nav>
-    </div>
-  );
-};
+//   return (
+//     <div>
+//       <h1>Welcome to the Fitness App</h1>
+//       <nav>
+//         <Link to="/register">Go to Registration</Link>
+//         <Link to="/login">Go to Login</Link>
+//       </nav>
+//     </div>
+//   );
+// };
 
 const App = () => {
   return (
     <Router>
-      <Navigation />
+      {/* <Navigation /> */}
       <Routes>
-        <Route path="/" element={<h2>Home Page</h2>} />
+
+        <Route path="/" element={<HomePage />} />
+        {/* <Route path="/" element={<h2>Home Page</h2>} /> */}
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/roles/admin/admindashboard" element={<AdminDashboard />} />
