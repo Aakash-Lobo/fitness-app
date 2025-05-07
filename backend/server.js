@@ -110,7 +110,7 @@ passport.use(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "http://localhost:5001/auth/google/callback",
+      callbackURL: "https://brave-smoke-0773e2a1e.6.azurestaticapps.net/auth/google/callback",
     },
     async (accessToken, refreshToken, profile, done) => {
       let user = await User.findOne({ googleId: profile.id });
@@ -189,7 +189,7 @@ app.post("/register", async (req, res) => {
 
     await user.save();
 
-    const verificationLink = `http://localhost:5001/auth/verify?token=${verificationToken}`;
+    const verificationLink = `https://brave-smoke-0773e2a1e.6.azurestaticapps.net/auth/verify?token=${verificationToken}`;
     await sendEmail(email, "Verify Your Email", `Click here to verify your email: ${verificationLink}`);
 
     res.status(201).json({ message: "User registered. Please verify your email." });
@@ -280,22 +280,22 @@ app.get(
   passport.authenticate("google", { failureRedirect: "/auth/failure" }),
   (req, res) => {
     if (!req.user) {
-      return res.redirect("http://localhost:3000/login?error=unauthorized");
+      return res.redirect("https://brave-smoke-0773e2a1e.6.azurestaticapps.net/login?error=unauthorized");
     }
 
     if (req.user.status === "pending") {
-      return res.redirect("http://localhost:3000/login?error=pending");
+      return res.redirect("https://brave-smoke-0773e2a1e.6.azurestaticapps.net/login?error=pending");
     } else if (req.user.status === "declined") {
-      return res.redirect("http://localhost:3000/login?error=declined");
+      return res.redirect("https://brave-smoke-0773e2a1e.6.azurestaticapps.net/login?error=declined");
     }
 
     // Redirect based on user role
     if (req.user.role === "admin") {
-      return res.redirect("http://localhost:3000/roles/admin/admindashboard");
+      return res.redirect("https://brave-smoke-0773e2a1e.6.azurestaticapps.net/roles/admin/admindashboard");
     } else if (req.user.role === "trainer") {
-      return res.redirect("http://localhost:3000/roles/Trainer/trainerdashboard");
+      return res.redirect("https://brave-smoke-0773e2a1e.6.azurestaticapps.net/roles/Trainer/trainerdashboard");
     } else {
-      return res.redirect("http://localhost:3000/roles/User/userdashboard");
+      return res.redirect("https://brave-smoke-0773e2a1e.6.azurestaticapps.net/roles/User/userdashboard");
     }
   }
 );

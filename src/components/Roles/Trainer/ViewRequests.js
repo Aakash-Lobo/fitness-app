@@ -27,7 +27,7 @@ const ViewRequests = () => {
   const fetchRequests = useCallback(async () => {
     try {
       const response = await fetch(
-        `http://localhost:5001/trainer/requests/${trainerId}`
+        `https://brave-smoke-0773e2a1e.6.azurestaticapps.net/trainer/requests/${trainerId}`
       );
       if (!response.ok) throw new Error("Failed to fetch requests");
       const data = await response.json();
@@ -39,7 +39,7 @@ const ViewRequests = () => {
 
   const fetchTrainers = useCallback(async () => {
     try {
-      const response = await fetch("http://localhost:5001/user/trainers");
+      const response = await fetch("https://brave-smoke-0773e2a1e.6.azurestaticapps.net/user/trainers");
       if (!response.ok) throw new Error("Failed to fetch trainers");
       const data = await response.json();
       setTrainers(data);
@@ -70,7 +70,7 @@ const ViewRequests = () => {
 
   const updateStatus = async (requestId, status) => {
     try {
-      await fetch(`http://localhost:5001/trainer/update-request/${requestId}`, {
+      await fetch(`https://brave-smoke-0773e2a1e.6.azurestaticapps.net/trainer/update-request/${requestId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status }),
@@ -90,7 +90,7 @@ const ViewRequests = () => {
 
     try {
       await fetch(
-        `http://localhost:5001/trainer/suggest-trainer/${selectedRequest._id}`,
+        `https://brave-smoke-0773e2a1e.6.azurestaticapps.net/trainer/suggest-trainer/${selectedRequest._id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },

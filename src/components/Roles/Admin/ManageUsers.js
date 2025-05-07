@@ -18,7 +18,7 @@ const ManageUsers = () => {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:5001/admin/users", {
+      const response = await fetch("https://brave-smoke-0773e2a1e.6.azurestaticapps.net/admin/users", {
         credentials: "include",
       });
 
@@ -46,7 +46,7 @@ const ManageUsers = () => {
   const handleEditSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`http://localhost:5001/admin/users/${selectedUser._id}`, {
+      const response = await fetch(`https://brave-smoke-0773e2a1e.6.azurestaticapps.net/admin/users/${selectedUser._id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -74,7 +74,7 @@ const ManageUsers = () => {
 
   const handleDelete = async () => {
     try {
-      const response = await fetch(`http://localhost:5001/admin/users/${selectedUser._id}`, {
+      const response = await fetch(`https://brave-smoke-0773e2a1e.6.azurestaticapps.net/admin/users/${selectedUser._id}`, {
         method: "DELETE",
         credentials: "include",
       });

@@ -10,7 +10,7 @@ const Sidebar = () => {
   const location = useLocation();
   const handleLogout = async () => {
     try {
-      const response = await fetch("http://localhost:5001/logout", {
+      const response = await fetch("https://brave-smoke-0773e2a1e.6.azurestaticapps.net/logout", {
         method: "POST",
         credentials: "include",
       });

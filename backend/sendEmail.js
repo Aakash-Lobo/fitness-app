@@ -16,7 +16,7 @@ const sendVerificationEmail = async (email) => {
       from: process.env.EMAIL_USER,
       to: email,
       subject: "Verify your email",
-      text: `Click the link to verify your email: http://localhost:3000/verify/${encodeURIComponent(email)}`,
+      text: `Click the link to verify your email: https://brave-smoke-0773e2a1e.6.azurestaticapps.net/verify/${encodeURIComponent(email)}`,
     };
 
     await transporter.sendMail(mailOptions);

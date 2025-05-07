@@ -29,7 +29,7 @@ const TrainerBookings = () => {
 
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:5001/trainer/bookings?trainerId=${trainerId}`);
+      const response = await fetch(`https://brave-smoke-0773e2a1e.6.azurestaticapps.net/trainer/bookings?trainerId=${trainerId}`);
       if (!response.ok) throw new Error("Failed to fetch bookings");
 
       const data = await response.json();
@@ -44,7 +44,7 @@ const TrainerBookings = () => {
   // Fetch users
   const fetchUsers = async () => {
     try {
-      const response = await fetch("http://localhost:5001/trainer/users");
+      const response = await fetch("https://brave-smoke-0773e2a1e.6.azurestaticapps.net/trainer/users");
       if (!response.ok) throw new Error("Failed to fetch users");
 
       const data = await response.json();
@@ -65,7 +65,7 @@ const TrainerBookings = () => {
   // Cancel booking
   const cancelBooking = async (bookingId) => {
     try {
-      const response = await fetch("http://localhost:5001/trainer/cancel-booking", {
+      const response = await fetch("https://brave-smoke-0773e2a1e.6.azurestaticapps.net/trainer/cancel-booking", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ bookingId }),
@@ -94,7 +94,7 @@ const TrainerBookings = () => {
     console.log("Sending request data:", requestData); // Log data being sent
   
     try {
-      const response = await fetch("http://localhost:5001/trainer/bookSession", {
+      const response = await fetch("https://brave-smoke-0773e2a1e.6.azurestaticapps.net/trainer/bookSession", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(requestData),

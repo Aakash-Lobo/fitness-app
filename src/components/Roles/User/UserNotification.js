@@ -22,7 +22,7 @@ const UserNotifications = () => {
     const fetchNotifications = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5001/user/notifications?userId=${userId}`
+          `https://brave-smoke-0773e2a1e.6.azurestaticapps.net/user/notifications?userId=${userId}`
         );
         if (!response.ok) throw new Error("Failed to fetch notifications");
         const data = await response.json();
@@ -39,7 +39,7 @@ const UserNotifications = () => {
   const deleteNotification = async (id) => {
     try {
       const response = await fetch(
-        `http://localhost:5001/user/notifications/${id}`,
+        `https://brave-smoke-0773e2a1e.6.azurestaticapps.net/user/notifications/${id}`,
         {
           method: "DELETE",
         }

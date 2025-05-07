@@ -27,7 +27,7 @@ const UserProgress = () => {
           return;
         }
 
-        const response = await fetch(`http://localhost:5001/user/progress?email=${userEmail}`);
+        const response = await fetch(`https://brave-smoke-0773e2a1e.6.azurestaticapps.net/user/progress?email=${userEmail}`);
         if (!response.ok) throw new Error("Failed to fetch progress data.");
 
         const data = await response.json();

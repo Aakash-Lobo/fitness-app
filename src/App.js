@@ -23,23 +23,6 @@ import TrainerProgress from "./components/Roles/Trainer/TrainerProgress";
 import UserNotifications from "./components/Roles/User/UserNotification";
 import VerifyEmail from "./components/VerifyEmail";
 
-// const Navigation = () => {
-//   const location = useLocation();
-
-//   // Show navigation only on the home page
-//   if (location.pathname !== "/") return null;
-
-//   return (
-//     <div>
-//       <h1>Welcome to the Fitness App</h1>
-//       <nav>
-//         <Link to="/register">Go to Registration</Link>
-//         <Link to="/login">Go to Login</Link>
-//       </nav>
-//     </div>
-//   );
-// };
-
 const App = () => {
   return (
     <Router>

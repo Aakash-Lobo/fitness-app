@@ -29,7 +29,7 @@ const Login = ({ closeModal }) => {
   const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch("http://localhost:5001/login", {
+      const response = await fetch("https://brave-smoke-0773e2a1e.6.azurestaticapps.net/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -52,7 +52,7 @@ const Login = ({ closeModal }) => {
           return;
         }
 
-        const { _id, role, status, email, verified } = data.user;
+        const { _id, role, status, email } = data.user;
 
         // if (!verified) {
         //   alert("Please verify your email before logging in.");
@@ -95,7 +95,7 @@ const Login = ({ closeModal }) => {
   };
 
   const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:5001/auth/google";
+    window.location.href = "https://brave-smoke-0773e2a1e.6.azurestaticapps.net/auth/google";
   };
 
   return (

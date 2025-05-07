@@ -24,7 +24,7 @@ const TrainerSessionHistory = () => {
           return;
         }
 
-        const response = await fetch(`http://localhost:5001/trainer/completedSessions?trainerId=${trainerId}`);
+        const response = await fetch(`https://brave-smoke-0773e2a1e.6.azurestaticapps.net/trainer/completedSessions?trainerId=${trainerId}`);
         if (!response.ok) {
           const errorData = await response.json();
           throw new Error(errorData.error || "Failed to fetch completed sessions.");
@@ -81,7 +81,7 @@ const TrainerSessionHistory = () => {
   // Handle Update Request
   const handleUpdate = async () => {
     try {
-      const response = await fetch(`http://localhost:5001/trainer/update-session/${selectedSession._id}`, {
+      const response = await fetch(`https://brave-smoke-0773e2a1e.6.azurestaticapps.net/trainer/update-session/${selectedSession._id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updatedSession),

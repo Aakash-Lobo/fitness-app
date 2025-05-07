@@ -22,7 +22,7 @@ const TrainerUpcomingSessions = () => {
           return;
         }
 
-        const response = await fetch(`http://localhost:5001/trainer/scheduledSessions?email=${email}`);
+        const response = await fetch(`https://brave-smoke-0773e2a1e.6.azurestaticapps.net/trainer/scheduledSessions?email=${email}`);
         if (!response.ok) throw new Error("Failed to fetch sessions.");
 
         const data = await response.json();
@@ -70,7 +70,7 @@ const TrainerUpcomingSessions = () => {
   // Update Session
   const handleUpdate = async () => {
     try {
-      const response = await fetch(`http://localhost:5001/trainer/update-session/${selectedSession._id}`, {
+      const response = await fetch(`https://brave-smoke-0773e2a1e.6.azurestaticapps.net/trainer/update-session/${selectedSession._id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updatedSession),
@@ -89,7 +89,7 @@ const TrainerUpcomingSessions = () => {
   // Cancel (Delete) Session
   const cancelSession = async () => {
     try {
-      const response = await fetch(`http://localhost:5001/trainer/cancelSession/${selectedSession._id}`, {
+      const response = await fetch(`https://brave-smoke-0773e2a1e.6.azurestaticapps.net/trainer/cancelSession/${selectedSession._id}`, {
         method: "DELETE",
       });
 

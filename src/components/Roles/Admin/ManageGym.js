@@ -26,7 +26,7 @@ const ManageGyms = () => {
   const fetchGyms = async () => {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:5001/admin/gyms", {
+      const response = await fetch("https://brave-smoke-0773e2a1e.6.azurestaticapps.net/admin/gyms", {
         credentials: "include",
       });
 
@@ -43,7 +43,7 @@ const ManageGyms = () => {
 
   const fetchTrainers = async () => {
     try {
-      const response = await fetch("http://localhost:5001/admin/trainers", {
+      const response = await fetch("https://brave-smoke-0773e2a1e.6.azurestaticapps.net/admin/trainers", {
         credentials: "include",
       });
       if (!response.ok) throw new Error("Failed to fetch trainers");
@@ -58,7 +58,7 @@ const ManageGyms = () => {
     if (!window.confirm("Are you sure you want to delete this gym?")) return;
     
     try {
-      const response = await fetch(`http://localhost:5001/admin/gyms/${gymId}`, {
+      const response = await fetch(`https://brave-smoke-0773e2a1e.6.azurestaticapps.net/admin/gyms/${gymId}`, {
         method: "DELETE",
         credentials: "include",
       });
@@ -73,7 +73,7 @@ const ManageGyms = () => {
 
   const handleAddGym = async () => {
     try {
-      const response = await fetch("http://localhost:5001/admin/gyms", {
+      const response = await fetch("https://brave-smoke-0773e2a1e.6.azurestaticapps.net/admin/gyms", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -16,7 +16,7 @@ const AdminDashboard = () => {
   const fetchUsers = async () => {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:5001/admin/users", {
+      const response = await fetch("https://brave-smoke-0773e2a1e.6.azurestaticapps.net/admin/users", {
         credentials: "include",
       });
 
@@ -34,7 +34,7 @@ const AdminDashboard = () => {
   const updateUserStatus = async (userId, status) => {
     console.log("Updating user ID:", userId); // Debugging
     try {
-      const response = await fetch(`http://localhost:5001/admin/update-status/${userId}`, {
+      const response = await fetch(`https://brave-smoke-0773e2a1e.6.azurestaticapps.net/admin/update-status/${userId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status }),
@@ -56,7 +56,7 @@ const AdminDashboard = () => {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch("http://localhost:5001/logout", {
+      const response = await fetch("https://brave-smoke-0773e2a1e.6.azurestaticapps.net/logout", {
         method: "POST",
         credentials: "include",
       });

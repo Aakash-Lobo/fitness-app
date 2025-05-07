@@ -28,7 +28,7 @@ const UserSessionHistory = () => {
           return;
         }
 
-        const response = await fetch(`http://localhost:5001/user/sessions?email=${userEmail}`);
+        const response = await fetch(`https://brave-smoke-0773e2a1e.6.azurestaticapps.net/user/sessions?email=${userEmail}`);
         if (!response.ok) throw new Error("Failed to fetch session history.");
 
         const data = await response.json();

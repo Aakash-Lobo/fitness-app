@@ -9,7 +9,7 @@ import blueMarker from "../../../assets/mapmarker.png";
 
 const handleLogout = async () => {
   try {
-    const response = await fetch("http://localhost:5001/logout", {
+    const response = await fetch("https://brave-smoke-0773e2a1e.6.azurestaticapps.net/logout", {
       method: "POST",
       credentials: "include",
     });
@@ -54,7 +54,7 @@ const SelectGym = () => {
 
   const fetchGyms = async () => {
     try {
-      const response = await fetch("http://localhost:5001/user/gyms");
+      const response = await fetch("https://brave-smoke-0773e2a1e.6.azurestaticapps.net/user/gyms");
       if (!response.ok) throw new Error("Failed to fetch gyms");
       const data = await response.json();
       setGyms(data);
@@ -70,7 +70,7 @@ const SelectGym = () => {
     setTrainers([]); // Reset trainers while loading
     try {
       const response = await fetch(
-        `http://localhost:5001/user/gyms/${gym._id}/trainers`
+        `https://brave-smoke-0773e2a1e.6.azurestaticapps.net/user/gyms/${gym._id}/trainers`
       );
       if (!response.ok) throw new Error("Failed to fetch trainers");
       const data = await response.json();
@@ -87,7 +87,7 @@ const SelectGym = () => {
       const pendingStatus = {};
       for (const trainer of trainersList) {
         const response = await fetch(
-          `http://localhost:5001/user/check-booking?userEmail=${email}&trainerId=${trainer._id}`
+          `https://brave-smoke-0773e2a1e.6.azurestaticapps.net/user/check-booking?userEmail=${email}&trainerId=${trainer._id}`
         );
         const data = await response.json();
         pendingStatus[trainer._id] = data.pending;
@@ -128,7 +128,7 @@ const SelectGym = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:5001/user/request-trainer",
+        "https://brave-smoke-0773e2a1e.6.azurestaticapps.net/user/request-trainer",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

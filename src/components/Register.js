@@ -17,7 +17,7 @@ const Register = () => {
 
   useEffect(() => {
     if (window.location.pathname !== "/register") return;
-    fetch("http://localhost:5001/auth/user", { credentials: "include" })
+    fetch("https://brave-smoke-0773e2a1e.6.azurestaticapps.net/auth/user", { credentials: "include" })
       .then((res) => res.json())
       .then((data) => {
         setUser(data);
@@ -31,11 +31,11 @@ const Register = () => {
   }, [navigate]);
 
   const handleGoogleLogin = () => {
-    window.open("http://localhost:5001/auth/google", "_self");
+    window.open("https://brave-smoke-0773e2a1e.6.azurestaticapps.net/auth/google", "_self");
   };
 
   const handleLogout = () => {
-    window.open("http://localhost:5001/auth/logout", "_self");
+    window.open("https://brave-smoke-0773e2a1e.6.azurestaticapps.net/auth/logout", "_self");
   };
 
   const handleChange = (e) => {
@@ -44,7 +44,7 @@ const Register = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    const response = await fetch("http://localhost:5001/register", {
+    const response = await fetch("https://brave-smoke-0773e2a1e.6.azurestaticapps.net/register", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(formData),

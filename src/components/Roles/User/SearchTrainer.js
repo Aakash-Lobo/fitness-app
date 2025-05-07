@@ -42,7 +42,7 @@ const SearchTrainers = () => {
   const fetchTrainers = async () => {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:5001/user/trainers", {
+      const response = await fetch("https://brave-smoke-0773e2a1e.6.azurestaticapps.net/user/trainers", {
         credentials: "include",
       });
       if (!response.ok) throw new Error("Failed to fetch trainers");
@@ -60,7 +60,7 @@ const SearchTrainers = () => {
       const pendingStatus = {};
       for (const trainer of trainers) {
         const response = await fetch(
-          `http://localhost:5001/user/check-booking?userEmail=${email}&trainerId=${trainer._id}`
+          `https://brave-smoke-0773e2a1e.6.azurestaticapps.net/user/check-booking?userEmail=${email}&trainerId=${trainer._id}`
         );
         const data = await response.json();
         pendingStatus[trainer._id] = data.pending;
@@ -94,7 +94,7 @@ const SearchTrainers = () => {
 
     try {
       const response = await fetch(
-        "http://localhost:5001/user/request-trainer",
+        "https://brave-smoke-0773e2a1e.6.azurestaticapps.net/user/request-trainer",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

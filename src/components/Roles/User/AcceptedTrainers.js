@@ -28,7 +28,7 @@ const AcceptedTrainers = () => {
         }
 
         const response = await fetch(
-          `http://localhost:5001/user/acceptedTrainers?email=${email}`
+          `https://brave-smoke-0773e2a1e.6.azurestaticapps.net/user/acceptedTrainers?email=${email}`
         );
         if (!response.ok) throw new Error("Failed to fetch trainers.");
 
@@ -62,7 +62,7 @@ const AcceptedTrainers = () => {
         sessionStorage.getItem("email") || localStorage.getItem("email");
 
       const response = await fetch(
-        `http://localhost:5001/user/cancelTrainer/${selectedTrainer._id}?email=${email}`,
+        `https://brave-smoke-0773e2a1e.6.azurestaticapps.net/user/cancelTrainer/${selectedTrainer._id}?email=${email}`,
         { method: "PUT" }
       );
 
@@ -100,7 +100,7 @@ const AcceptedTrainers = () => {
       const email =
         sessionStorage.getItem("email") || localStorage.getItem("email");
 
-      const response = await fetch("http://localhost:5001/user/bookSession", {
+      const response = await fetch("https://brave-smoke-0773e2a1e.6.azurestaticapps.net/user/bookSession", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

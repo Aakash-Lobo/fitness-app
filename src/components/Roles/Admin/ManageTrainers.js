@@ -21,7 +21,7 @@ const ManageTrainers = () => {
   const fetchTrainers = async () => {
     try {
       setLoading(true);
-      const response = await fetch("http://localhost:5001/admin/trainers", {
+      const response = await fetch("https://brave-smoke-0773e2a1e.6.azurestaticapps.net/admin/trainers", {
         credentials: "include",
       });
 
@@ -53,7 +53,7 @@ const ManageTrainers = () => {
   const handleEditSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`http://localhost:5001/admin/trainers/${selectedUser._id}`, {
+      const response = await fetch(`https://brave-smoke-0773e2a1e.6.azurestaticapps.net/admin/trainers/${selectedUser._id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
@@ -73,7 +73,7 @@ const ManageTrainers = () => {
     if (!window.confirm("Are you sure you want to delete this trainer?")) return;
   
     try {
-      const response = await fetch(`http://localhost:5001/admin/trainers/${trainerId}`, {
+      const response = await fetch(`https://brave-smoke-0773e2a1e.6.azurestaticapps.net/admin/trainers/${trainerId}`, {
         method: "DELETE",
         credentials: "include",
       });
@@ -91,7 +91,7 @@ const ManageTrainers = () => {
 
   const handleAddTrainer = async () => {
     try {
-      const response = await fetch("http://localhost:5001/admin/trainers", {
+      const response = await fetch("https://brave-smoke-0773e2a1e.6.azurestaticapps.net/admin/trainers", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
