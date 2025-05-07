@@ -199,6 +199,30 @@ app.post("/register", async (req, res) => {
   }
 });
 
+app.post("/login", (req, res, next) => {
+  passport.authenticate("local", (err, user, info) => {
+    if (err) return res.status(500).json({ message: "Server error" });
+
+    if (!user) return res.status(400).json({ message: info.message });
+
+    req.logIn(user, (err) => {
+      if (err) return res.status(500).json({ message: "Login failed" });
+
+      return res.json({
+        message: "Logged in successfully",
+        user: {
+          _id: user._id,  // ✅ Ensure `_id` is included
+          name: user.name,
+          email: user.email,
+          status: user.status,
+          role: user.role,
+        },
+      });
+    }
+  );
+  })(req, res, next);
+});
+
 app.post("/verify/:email", async (req, res) => {
   try {
     const { email } = req.params;
@@ -221,9 +245,6 @@ app.post("/verify/:email", async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 });
-
-
-
 
 // Manual Login Route
 app.post("/login", (req, res, next) => {

@@ -68,9 +68,9 @@ const TrainerSidebar = () => {
               <li>
                 <a href="/Roles/Trainer/TrainerSessionHistory">History</a>
               </li>
-              <li>
+              {/* <li>
                 <a href="/Roles/Trainer/TrainerProgress">Progress</a>
-              </li>
+              </li> */}
             </ul>
           )}
         </li>

@@ -8,34 +8,54 @@ const UpcomingSessions = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const fetchUpcomingSessions = async () => {
-      try {
-        const email = sessionStorage.getItem("email") || localStorage.getItem("email");
-        if (!email) {
-          setError("User not logged in.");
-          setLoading(false);
-          return;
-        }
-
-        const response = await fetch(`http://localhost:5001/user/upcomingSessions?email=${email}`);
-        if (!response.ok) throw new Error("Failed to fetch sessions.");
-
-        const data = await response.json();
-        setSessions(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchUpcomingSessions();
+    fetchSessions();
   }, []);
+
+  const fetchSessions = async () => {
+    try {
+      const email = sessionStorage.getItem("email") || localStorage.getItem("email");
+      if (!email) {
+        setError("User not logged in.");
+        setLoading(false);
+        return;
+      }
+
+      const response = await fetch(`http://localhost:5001/user/upcomingSessions?email=${email}`);
+      if (!response.ok) throw new Error("Failed to fetch sessions.");
+
+      const data = await response.json();
+      setSessions(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDelete = async (sessionId) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this session?");
+    if (!confirmDelete) return;
+
+    try {
+      const response = await fetch(`http://localhost:5001/user/deleteSession/${sessionId}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Delete failed");
+      }
+
+      setSessions((prev) => prev.filter((session) => session._id !== sessionId));
+      alert("Session deleted successfully.");
+    } catch (err) {
+      alert(err.message);
+    }
+  };
 
   return (
     <div className="user-dashboard">
       <Sidebar />
-
       <div className="main-content">
         <h1>Upcoming Sessions</h1>
 
@@ -56,17 +76,34 @@ const UpcomingSessions = () => {
                   <th>Duration</th>
                   <th>Notes</th>
                   <th>Status</th>
+                  <th>Action</th>
                 </tr>
               </thead>
               <tbody>
                 {sessions.map((session) => (
                   <tr key={session._id}>
-                    <td>{session.trainerId?.name || "Unknown"}</td> {/* Display trainer name */}
+                    <td>{session.trainerId?.name || "Unknown"}</td>
                     <td>{session.date}</td>
                     <td>{session.time}</td>
                     <td>{session.duration} mins</td>
                     <td>{session.notes || "No notes"}</td>
-                    <td className={`status-${session.status.toLowerCase()}`}>{session.status}</td>
+                    <td className={`status-${session.status.toLowerCase()}`}>
+                      {session.status}
+                    </td>
+                    <td>
+                      {session.status.toLowerCase() === "completed" ? (
+                        <button className="delete-btn" disabled>
+                          Completed
+                        </button>
+                      ) : (
+                        <button
+                          className="delete-btn"
+                          onClick={() => handleDelete(session._id)}
+                        >
+                          Delete
+                        </button>
+                      )}
+                    </td>
                   </tr>
                 ))}
               </tbody>

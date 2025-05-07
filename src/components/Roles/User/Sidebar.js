@@ -42,9 +42,9 @@ const Sidebar = () => {
           </button>
           {showTrainerSubmenu && (
             <ul className="submenu">
-              <li>
+              {/* <li>
                 <a href="/Roles/User/SearchTrainer">Book Trainers</a>
-              </li>
+              </li> */}
               <li>
                 <a href="./AcceptedTrainers">Book Session</a>
               </li>

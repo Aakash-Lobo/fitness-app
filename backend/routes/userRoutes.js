@@ -362,6 +362,24 @@ router.delete("/notifications/:id", async (req, res) => {
   }
 });
 
+// Example Express route
+router.delete("/deleteSession/:id", async (req, res) => {
+  try {
+    const session = await Session.findById(req.params.id);
+    if (!session) return res.status(404).json({ message: "Session not found" });
+
+    if (session.status === "Completed") {
+      return res.status(400).json({ message: "Cannot delete completed sessions" });
+    }
+
+    await Session.deleteOne({ _id: req.params.id });
+    res.status(200).json({ message: "Session deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ message: "Error deleting session" });
+  }
+});
+
+
 
 
 module.exports = router;
