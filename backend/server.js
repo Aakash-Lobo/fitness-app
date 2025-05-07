@@ -14,6 +14,14 @@ const crypto = require("crypto"); // Add this at the top
 
 const app = express();
 
+const corsOptions = {
+  origin: 'https://brave-smoke-0773e2a1e.6.azurestaticapps.net',
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+};
+
+app.use(cors(corsOptions));
+
 // Middleware
 app.use(express.json());
 app.use(cors({ origin: "http://localhost:3000", credentials: true }));
